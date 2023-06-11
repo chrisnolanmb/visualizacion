@@ -1,8 +1,9 @@
+from sys import displayhook
 import pandas as pd
 import numpy as np
 
 #leyendo los datos
-df = pd.read_csv("C:/Users/chris/OneDrive/Escritorio/Expo_vis/ProyectoFinal/mapaComputacion.csv", sep=";", encoding='UTF-8')
+df = pd.read_csv("mapaComputacion.csv", sep=";", encoding='UTF-8')
 
 # Crea un diccionario con los nombres de las columnas
 new_names = {
@@ -58,6 +59,7 @@ df.replace(" ", np.nan, inplace=True)
 df.replace("na", np.nan, inplace=True)
 df.fillna('No aplica', inplace=True)
 
+displayhook(df.head())
 #Estados disponibles
 # Lista de valores
 estados = ['Estado de México', 'Puebla', 'Ciudad de México', 'Morelos', 'Hidalgo', 'Baja California', 'Michoacán', 'San Luis Potosí', 'Tamaulipas', 'Veracruz', 'Colima', 'Sinaloa', 'Sonora', 'Tabasco', 'Zacatecas', 'Jalisco', 'Querétaro', 'Coahuila']

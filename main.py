@@ -33,6 +33,7 @@ app.layout = html.Div([
 # Define the callback function
 @app.callback(Output('maps', 'figure'),
               Input('tabs', 'value'))
+
 def render_content(tab):
     if tab == 'tab-1':
         df = df_lic

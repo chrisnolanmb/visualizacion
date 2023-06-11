@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 #leyendo los datos
-df = pd.read_csv("C:/Users/chris/OneDrive/Escritorio/Expo_vis/ProyectoFinal/mapaComputacion.csv", sep=";", encoding='UTF-8')
+df = pd.read_csv("mapaComputacion.csv", sep=";", encoding='UTF-8')
 
 # Crea un diccionario con los nombres de las columnas
 new_names = {

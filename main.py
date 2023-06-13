@@ -33,7 +33,8 @@ app.layout = dbc.Container(
                         ]),
                         dcc.Graph(figure={}, id='maps')
                     ],
-                    width=6
+                    width={'size': 12, 'order': 1},
+                    lg={'size': 6, 'order': 1}
                 ),
                 dbc.Col(
                     [
@@ -51,11 +52,13 @@ app.layout = dbc.Container(
                                         ),
                                     ]
                                 ),
+                                dbc.CardBody(id="stats")
                             ],
                             body=True,
                         )
                     ],
-                    width=6
+                    width={'size': 12, 'order': 2},
+                    lg={'size': 6, 'order': 2}
                 ),
             ],
             justify="between",
@@ -64,6 +67,24 @@ app.layout = dbc.Container(
     ],
     fluid=True,
 )
+
+
+@app.callback(
+    Output('estado', 'options'),
+    [Input('tabs', 'value')]
+)
+def update_dropdown_options(tab):
+    if tab == 'tab-1':
+        df = df_lic
+    elif tab == 'tab-2':
+        df = df_master
+    else:
+        df = df_doc
+
+    entidad_options = [{'label': entidad, 'value': entidad}
+                       for entidad in df['Entidad Federativa donde se imparte'].unique()]
+
+    return entidad_options
 
 
 @app.callback(
@@ -86,10 +107,10 @@ def render_content(tab, estado):
                                 hover_data=[df.Correo,
                                             df["Nombre de la Carrera (Licenciatura)"],
                                             df["Institución/Universidad"],
-                                            df["Sede (Licenciatura)"],
+                                            # df["Sede (Licenciatura)"],
                                             df["Página web del programa de Licenciatura (si hubiera)"],
                                             df["Entidad Federativa donde se imparte"],
-                                            df["¿Su Institución tiene un programa Nivel Licenciatura?"],
+                                            # df["¿Su Institución tiene un programa Nivel Licenciatura?"],
                                             df["Dirección física (Licenciatura)"],
                                             df["Área(s) de interés (Licenciatura)"],
                                             df["¿La Institución es pública o privada?"]],
@@ -123,14 +144,27 @@ def render_content(tab, estado):
 
     if estado is not None:
         df_estado = df[df['Entidad Federativa donde se imparte'] == estado]
+
         if len(df_estado) > 0:
+            zoom_level = 9 if estado != 'Tamaulipas' else 7
+
+            fig.update_mapboxes(
+                domain={'x': [0, 1], 'y': [0, 1]},
+                center=dict(lat=df_estado['lat'].mean(),
+                            lon=df_estado['lon'].mean()),
+                zoom=zoom_level,
+                style='open-street-map',
+                bearing=0
+            )
+
             fig.update_layout(
-                mapbox_center={"lat": df_estado['lat'].mean(
-                ), "lon": df_estado['lon'].mean()}
+                mapbox_center={"lat": float(df_estado['lat'].iloc[0]),
+                               "lon": float(df_estado['lon'].iloc[0])}
+
             )
             fig.update_layout(mapbox_zoom=6)
             fig.update_mapboxes(
-                zoom=9,
+                zoom=8,
                 style='open-street-map',
                 center=dict(lat=df_estado['lat'].mean(),
                             lon=df_estado['lon'].mean())
@@ -138,7 +172,7 @@ def render_content(tab, estado):
             fig.update_layout(
                 mapbox={
                     'center': {'lat': df_estado['lat'].mean(), 'lon': df_estado['lon'].mean()},
-                    'zoom': 9,
+                    'zoom': 8,
                     'style': 'open-street-map'
                 }
             )
@@ -176,8 +210,45 @@ def render_content(tab, estado):
                 'style': 'open-street-map'
             }
         )
+#Esto aun no funciona xD
+        fig.update_traces(
+            hovertemplate="<b>%{text}</b><br>"
+                  "Correo: %{customdata[0]}<br>"
+                  "Carrera: %{customdata[1]}<br>"
+                  "Institución: %{customdata[2]}<br>"
+                  "Página web: %{customdata[3]}<br>"
+                  "Entidad Federativa: %{customdata[4]}<br>"
+                  "Dirección: %{customdata[5]}<br>"
+                  "Área(s) de interés: %{customdata[6]}<br>"
+                  "Pública o privada: %{customdata[7]}<br>"
+        )
 
     return fig
+
+
+@app.callback(
+    Output('stats', 'children'),
+    [Input('estado', 'value')]
+)
+def update_stats(estado):
+    if estado is not None:
+        df_estado = df_lic[df_lic['Entidad Federativa donde se imparte'] == estado]
+        total_licenciaturas = len(df_estado)
+        total_instituciones = len(df_estado['Institución/Universidad'].unique())
+
+        return [
+            html.H3(f"Estadísticas del estado seleccionado ({estado})"),
+            html.P(f"Total de Licenciaturas: {total_licenciaturas}"),
+            html.P(f"Total de Instituciones: {total_instituciones}"),
+            html.P(f"Total de Instituciones Públicas: {len(df_estado[df_estado['¿La Institución es pública o privada?'] == 'Pública'])}"),
+            html.P(f"Total de Instituciones Privadas: {len(df_estado[df_estado['¿La Institución es pública o privada?'] == 'Privada'])}"),
+            html.P(f"Areas de interes más comunes: {', '.join(df_estado['Área(s) de interés (Licenciatura)'].value_counts().head(1).index.unique())}"),
+            html.P(f"interesadas en Ciencias de datos: {len(df_estado[df_estado['Área(s) de interés (Licenciatura)'].str.contains('Ciencia de datos')])}"),
+
+            # Agrega más componentes para mostrar otras estadísticas
+        ]
+    else:
+        return []
 
 
 if __name__ == '__main__':

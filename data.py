@@ -55,11 +55,19 @@ df.pop("Marca_temporal")
 #               'mapaIframe'], axis=1)
 
 df=pd.DataFrame(df)
+df['lat'] = df['lat'].astype(float)
+df['lon'] = df['lon'].astype(float)
+
+df.loc[24, 'lat'] = 19.4646508
+df.loc[24, 'lon'] = -97.6871585
+
+
+
 df.replace(" ", np.nan, inplace=True)
 df.replace("na", np.nan, inplace=True)
 df.fillna('No aplica', inplace=True)
 
-displayhook(df.head())
+# displayhook(df.head())
 #Estados disponibles
 # Lista de valores
 estados = ['Estado de México', 'Puebla', 'Ciudad de México', 'Morelos', 'Hidalgo', 'Baja California', 'Michoacán', 'San Luis Potosí', 'Tamaulipas', 'Veracruz', 'Colima', 'Sinaloa', 'Sonora', 'Tabasco', 'Zacatecas', 'Jalisco', 'Querétaro', 'Coahuila']

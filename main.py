@@ -15,26 +15,6 @@ df_doc = data.df_doc
 df_dict = {'Licenciatura': df_lic, 'Maestría': df_master, 'Doctorado': df_doc}
 estados = data.estados_dict
 
-# tabs_styles = {
-#     'height': '44px'
-# }
-# tab_style = {
-#     'borderBottom': '1px solid #fca311',
-#     'padding': '6px',
-#     'fontWeight': 'bold',
-#     'color': '#E5E5E5',
-
-#     'backgroundColor': '#000000'
-# }
-
-# tab_selected_style = {
-#     'borderTop': '1px solid #d6d6d6',
-#     'borderBottom': '1px solid #d6d6d6',
-#     'backgroundColor': '#14213d',
-#     'color': 'white',
-#     'padding': '6px'
-# }
-
 # se cran las tarjetas que contendran la informacion mas relevante
 first_card = dbc.Card(
     dbc.CardBody(
@@ -61,13 +41,180 @@ second_card = dbc.Card(
 )
 
 # Create a Dash app
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, 'style.css'])
+app = dash.Dash(__name__, external_stylesheets=[
+                                                dbc.themes.BOOTSTRAP,
+                                                'style.css'
+                                                ]
+                )
 
 # Define the app layout
+# app.layout = dbc.Container(
+
+#     [
+
+#         html.H1("Mapa de Programas Educativos"),
+#         dbc.Row(
+#     [
+#         dbc.Col(
+#             [
+#                 dbc.Card(
+#                     [
+#                         html.Div(className="dropdown", children=
+#                             [
+#                                 dbc.Label("Selecciona un Estado"),
+#                                 dcc.Dropdown(
+#                                     id="estado",
+#                                     options=[
+#                                         {"label": col, "value": col} for col in estados
+#                                     ],
+#                                     value="",
+#                                 ),
+#                             ]
+#                         ),
+
+#                     ],
+#                     body=True,
+#                 )
+#             ],
+#             width={'size': 4, 'order': 2},  # Ajusta el ancho de la columna del dropdown
+#             lg={'size': 3, 'order': 2}
+#         ),
+#         dbc.Col(
+#             [
+#                 dcc.Tabs(id='tabs',
+#                          value='tab-1',
+#                          className='custom-tabs',
+#                          children=[
+#                              dcc.Tab(label='Licenciatura',
+#                                      value='tab-1',
+#                                      className='custom-tab',
+#                                      selected_className='custom-tab--selected'
+#                                      ),
+#                              dcc.Tab(label='Maestría',
+#                                      value='tab-2',
+#                                      className='custom-tab',
+#                                      selected_className='custom-tab--selected'
+#                                      ),
+#                              dcc.Tab(label='Doctorado',
+#                                      value='tab-3',
+#                                      className='custom-tab',
+#                                      selected_className='custom-tab--selected'
+#                                      )
+#                          ]),
+#                 dcc.Graph(figure={}, id='maps')
+#             ],
+#             width={'size': 8, 'order': 1},  # Ajusta el ancho de la columna del mapa
+#             lg={'size': 9, 'order': 1}
+#         ),
+#     ],
+#     justify="between",
+#     align="center",
+# ),
+#         # dbc.Row(
+#         #     html.Div(
+#         #     [
+#         #         dbc.Card(
+#         #             dbc.CardBody("This is some text within a card body"),
+#         #             className="mb-3",
+#         #         ),
+#         #         dbc.Card("This is also within a body", id='stats', body=True),
+#         #     ]
+#         #     )
+#         # ),
+#         # dbc.Row(
+#         #     [
+
+#         #         dbc.Col(first_card, width=4),
+#         #         dbc.Col(second_card, width=8),
+#         #     ]
+#         # ),
+#         dbc.Row(
+#             [
+#                 dbc.Col(id="stats"),
+#             ]
+#         ),
+
+#     ],
+#     fluid=True,
+# )
+
+# app.layout = dbc.Container(
+#     [
+#         html.H1("Mapa de Programas Educativos"),
+#         dbc.Row(
+#             [
+#                 dbc.Col(
+#                     [
+#                         dbc.Card(
+#                             [
+#                                 html.Div(className="dropdown", children=
+#                                     [
+#                                         dbc.Label("Selecciona un Estado"),
+#                                         dcc.Dropdown(
+#                                             id="estado",
+#                                             options=[
+#                                                 {"label": col, "value": col} for col in estados
+#                                             ],
+#                                             value="",
+#                                         ),
+#                                     ]
+#                                 ),
+
+#                             ],
+#                             body=True,
+#                         ),
+#                         dbc.Row(
+#                             [
+#                                 dbc.Col(first_card, width=6),
+#                                 dbc.Col(second_card, width=6),
+#                             ],
+#                             className="mb-3",
+#                         ),
+#                         dbc.Row(
+#             [
+#                 dbc.Col(id="stats"),
+#             ]
+#         ),
+#                     ],
+#                     width={'size': 4, 'order': 2},
+#                     lg={'size': 3, 'order': 2}
+#                 ),
+#                 dbc.Col(
+#                     [
+#                         dcc.Tabs(id='tabs',
+#                                  value='tab-1',
+#                                  className='custom-tabs',
+#                                  children=[
+#                                      dcc.Tab(label='Licenciatura',
+#                                              value='tab-1',
+#                                              className='custom-tab',
+#                                              selected_className='custom-tab--selected'
+#                                              ),
+#                                      dcc.Tab(label='Maestría',
+#                                              value='tab-2',
+#                                              className='custom-tab',
+#                                              selected_className='custom-tab--selected'
+#                                              ),
+#                                      dcc.Tab(label='Doctorado',
+#                                              value='tab-3',
+#                                              className='custom-tab',
+#                                              selected_className='custom-tab--selected'
+#                                              )
+#                                  ]),
+#                         dcc.Graph(figure={}, id='maps')
+#                     ],
+#                     width={'size': 8, 'order': 1},
+#                     lg={'size': 9, 'order': 1}
+#                 ),
+#             ],
+#             justify="between",
+#             align="center",
+#         ),
+#     ],
+#     fluid=True,
+# )
 app.layout = dbc.Container(
-
     [
-
         html.H1("Mapa de Programas Educativos"),
         dbc.Row(
             [
@@ -75,86 +222,70 @@ app.layout = dbc.Container(
                     [
                         dbc.Card(
                             [
-                                html.Div(
-                                    [
-                                        dbc.Label("Selecciona un Estado"),
-                                        dcc.Dropdown(
-                                            id="estado",
-                                            options=[
-                                                {"label": col, "value": col} for col in estados
-                                            ],
-                                            value="",
-                                        ),
-                                    ]
+                                html.Div(className="dropdown", children=[
+                                    dbc.Label("Selecciona un Estado"),
+                                    dcc.Dropdown(
+                                        id="estado",
+                                        options=[
+                                            {"label": col, "value": col} for col in estados
+                                        ],
+                                        value="",
+                                    ),
+                                ]
                                 ),
-
                             ],
                             body=True,
-                        )
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(first_card, width=6),
+                                dbc.Col(second_card, width=6),
+                            ],
+                            className="mb-3",
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(id="stats"),
+                            ]
+                        ),
                     ],
-                    width={'size': 12, 'order': 2},
-                    lg={'size': 6, 'order': 2}
+                    # Adjust the width of the column
+                    width={'size': 12, 'order': 'first'},
+                    lg={'size': 4, 'order': 'first'}
                 ),
                 dbc.Col(
                     [
                         dcc.Tabs(id='tabs',
                                  value='tab-1',
+                                 className='custom-tabs',
                                  children=[
                                      dcc.Tab(label='Licenciatura',
                                              value='tab-1',
                                              className='custom-tab',
                                              selected_className='custom-tab--selected'
-                                             #  style=tab_style,
-                                             #  selected_style=tab_selected_style
                                              ),
                                      dcc.Tab(label='Maestría',
                                              value='tab-2',
                                              className='custom-tab',
                                              selected_className='custom-tab--selected'
-                                             #  style=tab_style,
-                                             #  selected_style=tab_selected_style
                                              ),
                                      dcc.Tab(label='Doctorado',
                                              value='tab-3',
                                              className='custom-tab',
                                              selected_className='custom-tab--selected'
-                                             #  style=tab_style,
-                                             #  selected_style=tab_selected_style
                                              )
                                  ]),
-                        dcc.Graph(figure={}, id='maps')
+                        dcc.Graph(figure={}, id='maps', config={
+                                  'displayModeBar': False})
                     ],
-                    width={'size': 12, 'order': 1},
-                    lg={'size': 6, 'order': 1}
+                    # Adjust the width of the column
+                    width={'size': 12, 'order': 'last'},
+                    lg={'size': 8, 'order': 'last'},
                 ),
             ],
             justify="between",
             align="center",
         ),
-        # dbc.Row(
-        #     html.Div(
-        #     [
-        #         dbc.Card(
-        #             dbc.CardBody("This is some text within a card body"),
-        #             className="mb-3",
-        #         ),
-        #         dbc.Card("This is also within a body", id='stats', body=True),
-        #     ]
-        #     )
-        # ),
-        # dbc.Row(
-        #     [
-
-        #         dbc.Col(first_card, width=4),
-        #         dbc.Col(second_card, width=8),
-        #     ]
-        # ),
-        dbc.Row(
-            [
-                dbc.Col(id="stats"),
-            ]
-        ),
-
     ],
     fluid=True,
 )
@@ -195,16 +326,18 @@ def render_content(tab, estado):
                                 zoom=4.7,
                                 height=800,
                                 center={"lat": 23.6345, "lon": -102.5528},
-                                hover_data=[df.Correo,
-                                            df["Nombre de la Carrera (Licenciatura)"],
-                                            df["Institución/Universidad"],
-                                            # df["Sede (Licenciatura)"],
-                                            df["Página web del programa de Licenciatura (si hubiera)"],
-                                            df["Entidad Federativa donde se imparte"],
-                                            # df["¿Su Institución tiene un programa Nivel Licenciatura?"],
-                                            df["Dirección física (Licenciatura)"],
-                                            df["Área(s) de interés (Licenciatura)"],
-                                            df["¿La Institución es pública o privada?"]],
+                                hover_data=[
+                                    # df.Correo,
+                                    # df["Nombre de la Carrera (Licenciatura)"],
+                                    # df["Institución/Universidad"],
+                                    # df["Sede (Licenciatura)"],
+                                    # df["Página web del programa de Licenciatura (si hubiera)"],
+                                    # df["Entidad Federativa donde se imparte"],
+                                    # df["¿Su Institución tiene un programa Nivel Licenciatura?"],
+                                    df["Dirección física (Licenciatura)"],
+                                    # df["Área(s) de interés (Licenciatura)"],
+                                    # df["¿La Institución es pública o privada?"]]
+                                ],
                                 size=df["size"],
                                 color_discrete_sequence=["green"]
                                 )
@@ -302,18 +435,6 @@ def render_content(tab, estado):
                 'style': 'open-street-map'
             }
         )
-# Esto aun no funciona xD
-        fig.update_traces(
-            hovertemplate="<b>%{text}</b><br>"
-            "Correo: %{customdata[0]}<br>"
-            "Carrera: %{customdata[1]}<br>"
-            "Institución: %{customdata[2]}<br>"
-            "Página web: %{customdata[3]}<br>"
-            "Entidad Federativa: %{customdata[4]}<br>"
-            "Dirección: %{customdata[5]}<br>"
-            "Área(s) de interés: %{customdata[6]}<br>"
-            "Pública o privada: %{customdata[7]}<br>"
-        )
 
     return fig
 
@@ -348,7 +469,7 @@ def update_stats(estado):
                                 ),
                             ]
                         ),
-                        width=4  # Ancho de la columna
+                        width=5  # Ancho de la columna
                     ),
                     dbc.Col(
                         dbc.Card(
@@ -382,12 +503,11 @@ def update_stats(estado):
                 ]
             ),
             dbc.Card(className="glassmorphism", children=[
-              
-                html.H5("Card title", className="card-title"),
+
+                html.H5("Total de Instituciones Públicas:",
+                        className="card-title"),
                 html.P(
-                    "This card also has some text content and not much else, but "
-                    "it is twice as wide as the first card."
-                ),
+                    f"{len(df_estado[df_estado['¿La Institución es pública o privada?'] == 'Pública'])}"),
             ]),
         ]
     else:

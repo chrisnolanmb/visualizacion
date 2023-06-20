@@ -6,7 +6,7 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import dash_bootstrap_components as dbc
 
-# Read in dataframes
+# leer los dataframe de las licenciaturas, maestrias y doctorados
 df_lic = data.df_lic
 df_master = data.df_master
 df_doc = data.df_doc
@@ -15,27 +15,62 @@ df_doc = data.df_doc
 df_dict = {'Licenciatura': df_lic, 'Maestría': df_master, 'Doctorado': df_doc}
 estados = data.estados_dict
 
+tabs_styles = {
+    'height': '44px'
+}
+tab_style = {
+    'borderBottom': '1px solid #fca311',
+    'padding': '6px',
+    'fontWeight': 'bold',
+    'color': '#E5E5E5',
+    
+    'backgroundColor': '#000000'
+}
+
+tab_selected_style = {
+    'borderTop': '1px solid #d6d6d6',
+    'borderBottom': '1px solid #d6d6d6',
+    'backgroundColor': '#14213d',
+    'color': 'white',
+    'padding': '6px'
+}
+
+#se cran las tarjetas que contendran la informacion mas relevante
+first_card = dbc.Card(
+    dbc.CardBody(
+        [
+            html.H5("Card title", className="card-title"),
+            html.P("This card has some text content, but not much else"),
+            dbc.Button("Go somewhere", color="primary"),
+        ]
+    )
+)
+
+
+second_card = dbc.Card(
+    dbc.CardBody(
+        [
+            html.H5("Card title", className="card-title"),
+            html.P(
+                "This card also has some text content and not much else, but "
+                "it is twice as wide as the first card."
+            ),
+            dbc.Button("Go somewhere", color="primary"),
+        ]
+    )
+)
+
 # Create a Dash app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # Define the app layout
 app.layout = dbc.Container(
+    
     [
+        
         html.H1("Mapa de Programas Educativos"),
         dbc.Row(
             [
-                dbc.Col(
-                    [
-                        dcc.Tabs(id='tabs', value='tab-1', children=[
-                            dcc.Tab(label='Licenciatura', value='tab-1'),
-                            dcc.Tab(label='Maestría', value='tab-2'),
-                            dcc.Tab(label='Doctorado', value='tab-3')
-                        ]),
-                        dcc.Graph(figure={}, id='maps')
-                    ],
-                    width={'size': 12, 'order': 1},
-                    lg={'size': 6, 'order': 1}
-                ),
                 dbc.Col(
                     [
                         dbc.Card(
@@ -60,14 +95,60 @@ app.layout = dbc.Container(
                     width={'size': 12, 'order': 2},
                     lg={'size': 6, 'order': 2}
                 ),
+                dbc.Col(
+                    [
+                        dcc.Tabs(id='tabs', 
+                                 value='tab-1',
+                                                              
+                                 children=[
+                            dcc.Tab(label='Licenciatura', 
+                                    value='tab-1',
+                                    className='custom-tab',
+                                    selected_className='custom-tab--selected',
+                                    style=tab_style, 
+                                    selected_style=tab_selected_style),
+                            dcc.Tab(label='Maestría',
+                                    value='tab-2',
+                                    className='custom-tab',
+                                    selected_className='custom-tab--selected',
+                                    style=tab_style, 
+                                    selected_style=tab_selected_style),
+                            dcc.Tab(label='Doctorado', 
+                                    value='tab-3',
+                                    className='custom-tab',
+                                    selected_className='custom-tab--selected',
+                                    style=tab_style, 
+                                    selected_style=tab_selected_style)
+                        ]),
+                        dcc.Graph(figure={}, id='maps')
+                    ],
+                    width={'size': 12, 'order': 1},
+                    lg={'size': 6, 'order': 1}
+                ),
             ],
             justify="between",
             align="center",
         ),
+        dbc.Row(
+            html.Div(
+            [
+                dbc.Card(
+                    dbc.CardBody("This is some text within a card body"),
+                    className="mb-3",
+                ),
+                dbc.Card("This is also within a body", id='stats', body=True),
+            ]
+            )
+        ),
+        dbc.Row(
+        [
+            dbc.Col(first_card, width=4),
+            dbc.Col(second_card, width=8),
+        ]
+        ),
     ],
     fluid=True,
 )
-
 
 @app.callback(
     Output('estado', 'options'),
@@ -138,7 +219,7 @@ def render_content(tab, estado):
                                 zoom=4.7,
                                 height=800,
                                 center={"lat": 23.6345, "lon": -102.5528},
-                                hover_data=[df.Correo],
+                                hover_data=[df["Dirección física (Doctorado)"]],
                                 color_discrete_sequence=["red"],
                                 size=df_doc["size"])
 
@@ -230,7 +311,12 @@ def render_content(tab, estado):
     Output('stats', 'children'),
     [Input('estado', 'value')]
 )
+
+
 def update_stats(estado):
+    '''
+    Esta funcion se encarga de actualizar las estadisticas de la entidad federativa seleccionada
+    '''
     if estado is not None:
         df_estado = df_lic[df_lic['Entidad Federativa donde se imparte'] == estado]
         total_licenciaturas = len(df_estado)

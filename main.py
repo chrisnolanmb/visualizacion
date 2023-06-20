@@ -15,25 +15,25 @@ df_doc = data.df_doc
 df_dict = {'Licenciatura': df_lic, 'Maestría': df_master, 'Doctorado': df_doc}
 estados = data.estados_dict
 
-tabs_styles = {
-    'height': '44px'
-}
-tab_style = {
-    'borderBottom': '1px solid #fca311',
-    'padding': '6px',
-    'fontWeight': 'bold',
-    'color': '#E5E5E5',
+# tabs_styles = {
+#     'height': '44px'
+# }
+# tab_style = {
+#     'borderBottom': '1px solid #fca311',
+#     'padding': '6px',
+#     'fontWeight': 'bold',
+#     'color': '#E5E5E5',
 
-    'backgroundColor': '#000000'
-}
+#     'backgroundColor': '#000000'
+# }
 
-tab_selected_style = {
-    'borderTop': '1px solid #d6d6d6',
-    'borderBottom': '1px solid #d6d6d6',
-    'backgroundColor': '#14213d',
-    'color': 'white',
-    'padding': '6px'
-}
+# tab_selected_style = {
+#     'borderTop': '1px solid #d6d6d6',
+#     'borderBottom': '1px solid #d6d6d6',
+#     'backgroundColor': '#14213d',
+#     'color': 'white',
+#     'padding': '6px'
+# }
 
 # se cran las tarjetas que contendran la informacion mas relevante
 first_card = dbc.Card(
@@ -61,7 +61,7 @@ second_card = dbc.Card(
 )
 
 # Create a Dash app
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, 'style.css'])
 
 # Define the app layout
 app.layout = dbc.Container(
@@ -99,26 +99,28 @@ app.layout = dbc.Container(
                     [
                         dcc.Tabs(id='tabs',
                                  value='tab-1',
-
                                  children=[
                                      dcc.Tab(label='Licenciatura',
                                              value='tab-1',
                                              className='custom-tab',
-                                             selected_className='custom-tab--selected',
-                                             style=tab_style,
-                                             selected_style=tab_selected_style),
+                                             selected_className='custom-tab--selected'
+                                             #  style=tab_style,
+                                             #  selected_style=tab_selected_style
+                                             ),
                                      dcc.Tab(label='Maestría',
                                              value='tab-2',
                                              className='custom-tab',
-                                             selected_className='custom-tab--selected',
-                                             style=tab_style,
-                                             selected_style=tab_selected_style),
+                                             selected_className='custom-tab--selected'
+                                             #  style=tab_style,
+                                             #  selected_style=tab_selected_style
+                                             ),
                                      dcc.Tab(label='Doctorado',
                                              value='tab-3',
                                              className='custom-tab',
-                                             selected_className='custom-tab--selected',
-                                             style=tab_style,
-                                             selected_style=tab_selected_style)
+                                             selected_className='custom-tab--selected'
+                                             #  style=tab_style,
+                                             #  selected_style=tab_selected_style
+                                             )
                                  ]),
                         dcc.Graph(figure={}, id='maps')
                     ],
@@ -327,7 +329,8 @@ def update_stats(estado):
     if estado is not None:
         df_estado = df_lic[df_lic['Entidad Federativa donde se imparte'] == estado]
         total_licenciaturas = len(df_estado)
-        total_instituciones = len(df_estado['Institución/Universidad'].unique())
+        total_instituciones = len(
+            df_estado['Institución/Universidad'].unique())
 
         return [
             dbc.Row(
@@ -335,10 +338,12 @@ def update_stats(estado):
                     dbc.Col(
                         dbc.Card(
                             [
-                                dbc.CardHeader(f"Estadísticas del estado seleccionado ({estado})"),
+                                dbc.CardHeader(
+                                    f"Estadísticas del estado seleccionado ({estado})"),
                                 dbc.CardBody(
                                     [
-                                        html.P(f"Total de Licenciaturas: {total_licenciaturas}"),
+                                        html.P(
+                                            f"Total de Licenciaturas: {total_licenciaturas}"),
                                     ]
                                 ),
                             ]
@@ -351,7 +356,8 @@ def update_stats(estado):
                                 dbc.CardHeader("Total de Instituciones"),
                                 dbc.CardBody(
                                     [
-                                        html.P(f"Total de Instituciones: {total_instituciones}"),
+                                        html.P(
+                                            f"Total de Instituciones: {total_instituciones}"),
                                     ]
                                 ),
                             ]
@@ -361,10 +367,12 @@ def update_stats(estado):
                     dbc.Col(
                         dbc.Card(
                             [
-                                dbc.CardHeader("Total de Instituciones Públicas"),
+                                dbc.CardHeader(
+                                    "Total de Instituciones Públicas"),
                                 dbc.CardBody(
                                     [
-                                        html.P(f"Total de Instituciones Públicas: {len(df_estado[df_estado['¿La Institución es pública o privada?'] == 'Pública'])}"),
+                                        html.P(
+                                            f"Total de Instituciones Públicas: {len(df_estado[df_estado['¿La Institución es pública o privada?'] == 'Pública'])}"),
                                     ]
                                 ),
                             ]
@@ -374,10 +382,7 @@ def update_stats(estado):
                 ]
             ),
             dbc.Card(className="glassmorphism", children=[
-                html.Link(
-                    rel='stylesheet',
-                    href='/assets/estilos.css'  # Ruta al archivo CSS
-                ),
+              
                 html.H5("Card title", className="card-title"),
                 html.P(
                     "This card also has some text content and not much else, but "
@@ -387,7 +392,6 @@ def update_stats(estado):
         ]
     else:
         return []
-
 
 
 if __name__ == '__main__':

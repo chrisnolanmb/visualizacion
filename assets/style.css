@@ -1,9 +1,43 @@
 .glassmorphism {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(236, 21, 21, 0.25);
     border-radius: 10px;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.18);
   }
-  
+  .custom-tabs-container {
+    width: 85%;
+}
+/* .custom-tab {
+    border-top-left-radius: 3px;
+    background-color: #063275;
+    padding: 0px 24px;
+    border-bottom: 1px solid #e7ac0a;
+} */
+
+.custom-tab {
+    color:#fffdff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-top: 3px solid transparent !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    border-bottom: 0px !important;
+    background-color: #080808 !important;
+    padding: 12px !important;
+    font-family: "system-ui";
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #e7ac0a;
+    padding-right: 10px !important;
+}
+.custom-tab--selected {
+    color: #e7ac0a !important;
+    box-shadow: 1px 1px 0px white;
+    border-left: 1px solid lightgrey !important;
+    border-right: 1px solid lightgrey !important;
+    border-top: 3px solid #e36209 !important;
+    padding-right: 30px !important;
+}  

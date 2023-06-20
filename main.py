@@ -23,7 +23,7 @@ tab_style = {
     'padding': '6px',
     'fontWeight': 'bold',
     'color': '#E5E5E5',
-    
+
     'backgroundColor': '#000000'
 }
 
@@ -35,7 +35,7 @@ tab_selected_style = {
     'padding': '6px'
 }
 
-#se cran las tarjetas que contendran la informacion mas relevante
+# se cran las tarjetas que contendran la informacion mas relevante
 first_card = dbc.Card(
     dbc.CardBody(
         [
@@ -65,9 +65,9 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # Define the app layout
 app.layout = dbc.Container(
-    
+
     [
-        
+
         html.H1("Mapa de Programas Educativos"),
         dbc.Row(
             [
@@ -87,7 +87,7 @@ app.layout = dbc.Container(
                                         ),
                                     ]
                                 ),
-                                dbc.CardBody(id="stats")
+
                             ],
                             body=True,
                         )
@@ -97,29 +97,29 @@ app.layout = dbc.Container(
                 ),
                 dbc.Col(
                     [
-                        dcc.Tabs(id='tabs', 
+                        dcc.Tabs(id='tabs',
                                  value='tab-1',
-                                                              
+
                                  children=[
-                            dcc.Tab(label='Licenciatura', 
-                                    value='tab-1',
-                                    className='custom-tab',
-                                    selected_className='custom-tab--selected',
-                                    style=tab_style, 
-                                    selected_style=tab_selected_style),
-                            dcc.Tab(label='Maestría',
-                                    value='tab-2',
-                                    className='custom-tab',
-                                    selected_className='custom-tab--selected',
-                                    style=tab_style, 
-                                    selected_style=tab_selected_style),
-                            dcc.Tab(label='Doctorado', 
-                                    value='tab-3',
-                                    className='custom-tab',
-                                    selected_className='custom-tab--selected',
-                                    style=tab_style, 
-                                    selected_style=tab_selected_style)
-                        ]),
+                                     dcc.Tab(label='Licenciatura',
+                                             value='tab-1',
+                                             className='custom-tab',
+                                             selected_className='custom-tab--selected',
+                                             style=tab_style,
+                                             selected_style=tab_selected_style),
+                                     dcc.Tab(label='Maestría',
+                                             value='tab-2',
+                                             className='custom-tab',
+                                             selected_className='custom-tab--selected',
+                                             style=tab_style,
+                                             selected_style=tab_selected_style),
+                                     dcc.Tab(label='Doctorado',
+                                             value='tab-3',
+                                             className='custom-tab',
+                                             selected_className='custom-tab--selected',
+                                             style=tab_style,
+                                             selected_style=tab_selected_style)
+                                 ]),
                         dcc.Graph(figure={}, id='maps')
                     ],
                     width={'size': 12, 'order': 1},
@@ -129,26 +129,34 @@ app.layout = dbc.Container(
             justify="between",
             align="center",
         ),
+        # dbc.Row(
+        #     html.Div(
+        #     [
+        #         dbc.Card(
+        #             dbc.CardBody("This is some text within a card body"),
+        #             className="mb-3",
+        #         ),
+        #         dbc.Card("This is also within a body", id='stats', body=True),
+        #     ]
+        #     )
+        # ),
+        # dbc.Row(
+        #     [
+
+        #         dbc.Col(first_card, width=4),
+        #         dbc.Col(second_card, width=8),
+        #     ]
+        # ),
         dbc.Row(
-            html.Div(
             [
-                dbc.Card(
-                    dbc.CardBody("This is some text within a card body"),
-                    className="mb-3",
-                ),
-                dbc.Card("This is also within a body", id='stats', body=True),
+                dbc.Col(id="stats"),
             ]
-            )
         ),
-        dbc.Row(
-        [
-            dbc.Col(first_card, width=4),
-            dbc.Col(second_card, width=8),
-        ]
-        ),
+
     ],
     fluid=True,
 )
+
 
 @app.callback(
     Output('estado', 'options'),
@@ -219,7 +227,8 @@ def render_content(tab, estado):
                                 zoom=4.7,
                                 height=800,
                                 center={"lat": 23.6345, "lon": -102.5528},
-                                hover_data=[df["Dirección física (Doctorado)"]],
+                                hover_data=[
+                                    df["Dirección física (Doctorado)"]],
                                 color_discrete_sequence=["red"],
                                 size=df_doc["size"])
 
@@ -291,17 +300,17 @@ def render_content(tab, estado):
                 'style': 'open-street-map'
             }
         )
-#Esto aun no funciona xD
+# Esto aun no funciona xD
         fig.update_traces(
             hovertemplate="<b>%{text}</b><br>"
-                  "Correo: %{customdata[0]}<br>"
-                  "Carrera: %{customdata[1]}<br>"
-                  "Institución: %{customdata[2]}<br>"
-                  "Página web: %{customdata[3]}<br>"
-                  "Entidad Federativa: %{customdata[4]}<br>"
-                  "Dirección: %{customdata[5]}<br>"
-                  "Área(s) de interés: %{customdata[6]}<br>"
-                  "Pública o privada: %{customdata[7]}<br>"
+            "Correo: %{customdata[0]}<br>"
+            "Carrera: %{customdata[1]}<br>"
+            "Institución: %{customdata[2]}<br>"
+            "Página web: %{customdata[3]}<br>"
+            "Entidad Federativa: %{customdata[4]}<br>"
+            "Dirección: %{customdata[5]}<br>"
+            "Área(s) de interés: %{customdata[6]}<br>"
+            "Pública o privada: %{customdata[7]}<br>"
         )
 
     return fig
@@ -311,8 +320,6 @@ def render_content(tab, estado):
     Output('stats', 'children'),
     [Input('estado', 'value')]
 )
-
-
 def update_stats(estado):
     '''
     Esta funcion se encarga de actualizar las estadisticas de la entidad federativa seleccionada
@@ -323,18 +330,64 @@ def update_stats(estado):
         total_instituciones = len(df_estado['Institución/Universidad'].unique())
 
         return [
-            html.H3(f"Estadísticas del estado seleccionado ({estado})"),
-            html.P(f"Total de Licenciaturas: {total_licenciaturas}"),
-            html.P(f"Total de Instituciones: {total_instituciones}"),
-            html.P(f"Total de Instituciones Públicas: {len(df_estado[df_estado['¿La Institución es pública o privada?'] == 'Pública'])}"),
-            html.P(f"Total de Instituciones Privadas: {len(df_estado[df_estado['¿La Institución es pública o privada?'] == 'Privada'])}"),
-            html.P(f"Areas de interes más comunes: {', '.join(df_estado['Área(s) de interés (Licenciatura)'].value_counts().head(1).index.unique())}"),
-            html.P(f"interesadas en Ciencias de datos: {len(df_estado[df_estado['Área(s) de interés (Licenciatura)'].str.contains('Ciencia de datos')])}"),
-
-            # Agrega más componentes para mostrar otras estadísticas
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.Card(
+                            [
+                                dbc.CardHeader(f"Estadísticas del estado seleccionado ({estado})"),
+                                dbc.CardBody(
+                                    [
+                                        html.P(f"Total de Licenciaturas: {total_licenciaturas}"),
+                                    ]
+                                ),
+                            ]
+                        ),
+                        width=4  # Ancho de la columna
+                    ),
+                    dbc.Col(
+                        dbc.Card(
+                            [
+                                dbc.CardHeader("Total de Instituciones"),
+                                dbc.CardBody(
+                                    [
+                                        html.P(f"Total de Instituciones: {total_instituciones}"),
+                                    ]
+                                ),
+                            ]
+                        ),
+                        width=4  # Ancho de la columna
+                    ),
+                    dbc.Col(
+                        dbc.Card(
+                            [
+                                dbc.CardHeader("Total de Instituciones Públicas"),
+                                dbc.CardBody(
+                                    [
+                                        html.P(f"Total de Instituciones Públicas: {len(df_estado[df_estado['¿La Institución es pública o privada?'] == 'Pública'])}"),
+                                    ]
+                                ),
+                            ]
+                        ),
+                        width=4  # Ancho de la columna
+                    ),
+                ]
+            ),
+            dbc.Card(className="glassmorphism", children=[
+                html.Link(
+                    rel='stylesheet',
+                    href='/assets/estilos.css'  # Ruta al archivo CSS
+                ),
+                html.H5("Card title", className="card-title"),
+                html.P(
+                    "This card also has some text content and not much else, but "
+                    "it is twice as wide as the first card."
+                ),
+            ]),
         ]
     else:
         return []
+
 
 
 if __name__ == '__main__':

@@ -5,13 +5,15 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.18);
-  }
-  .custom-tabs-container {
+}
+
+.custom-tabs-container {
     width: 85%;
+    height: auto;
 }
 
 .custom-tab {
-    color:#fffdff;
+    color: #fffdff;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-top: 3px solid transparent !important;
@@ -27,6 +29,7 @@
     border-bottom: 1px solid #e7ac0a;
     padding-right: 10px !important;
 }
+
 .custom-tab--selected {
     color: #e7ac0a !important;
     box-shadow: 1px 1px 0px white;
@@ -34,7 +37,7 @@
     border-right: 1px solid lightgrey !important;
     border-top: 3px solid #e36209 !important;
     padding-right: 30px !important;
-}  
+}
 
 .custom-tabs {
     display: 70%;

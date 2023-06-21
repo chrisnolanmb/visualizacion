@@ -1,3 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+
+:root {
+    --main-bg-color: #FEFEF9;
+    --dark-bg-color: black;
+    --selected-bg-color: #696969;
+    --cards-bg-color: #EAEAEA;
+    --blue: #9CCED9;
+    --red: #E85D7E;
+    --green: #CFEABC;
+    --darkGreen: #B3D5AB;
+    --purple: #7D5CB8;
+    --corner: 20px;
+    --shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+}
+
+body {
+    font-family: 'Raleway';
+    background-color: var(--main-bg-color);
+
+}
+
+.colMapa {
+    border-radius: var(--corner);
+    box-shadow: var(--shadow);
+}
+
 .glassmorphism {
     background-color: rgba(236, 21, 21, 0.25);
     border-radius: 10px;
@@ -5,6 +33,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.18);
+
 }
 
 .custom-tabs-container {
@@ -14,8 +43,8 @@
 
 .custom-tab {
     color: #fffdff;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: var(--corner);
+    border-top-right-radius: var(--corner);
     border-top: 3px solid transparent !important;
     border-left: 0px !important;
     border-right: 0px !important;
@@ -31,12 +60,14 @@
 }
 
 .custom-tab--selected {
-    color: #e7ac0a !important;
-    box-shadow: 1px 1px 0px white;
-    border-left: 1px solid lightgrey !important;
-    border-right: 1px solid lightgrey !important;
-    border-top: 3px solid #e36209 !important;
-    padding-right: 30px !important;
+    color: var(--main-bg-color) !important;
+    background-color: var(--selected-bg-color) !important;
+
+}
+
+.underTabs {
+    background-color: var(--dark-bg-color);
+    border-radius: var(--corner);
 }
 
 .custom-tabs {
@@ -51,4 +82,7 @@
     position: relative;
     display: 30%;
     margin-left: 20px;
+    background-color: var(--selected-bg-color);
+    color: var(--main-bg-color);
+    border-radius: var(--corner);
 }

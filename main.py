@@ -42,10 +42,10 @@ second_card = dbc.Card(
 
 # Create a Dash app
 app = dash.Dash(__name__, external_stylesheets=[
-                                                dbc.themes.BOOTSTRAP,
-                                                'style.css'
-                                                ]
-                )
+    dbc.themes.BOOTSTRAP,
+    'style.css'
+]
+)
 
 # Define the app layout
 # app.layout = dbc.Container(

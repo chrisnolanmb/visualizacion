@@ -225,6 +225,8 @@ app.layout = dbc.Container(
                                 html.Div(className="dropdown", children=[
                                     dbc.Label("Selecciona un Estado"),
                                     dcc.Dropdown(
+                                        style={'background-color': '#696969',
+                                               'color': '#FEFEF9', 'border-radius': 20},
                                         id="estado",
                                         options=[
                                             {"label": col, "value": col} for col in estados
@@ -250,6 +252,7 @@ app.layout = dbc.Container(
                         ),
                     ],
                     # Adjust the width of the column
+
                     width={'size': 12, 'order': 'first'},
                     lg={'size': 4, 'order': 'first'}
                 ),
@@ -257,7 +260,7 @@ app.layout = dbc.Container(
                     [
                         dcc.Tabs(id='tabs',
                                  value='tab-1',
-                                 className='custom-tabs',
+                                 className='underTabs',
                                  children=[
                                      dcc.Tab(label='Licenciatura',
                                              value='tab-1',
@@ -279,6 +282,7 @@ app.layout = dbc.Container(
                                   'displayModeBar': False})
                     ],
                     # Adjust the width of the column
+                    className='colMapa',
                     width={'size': 12, 'order': 'last'},
                     lg={'size': 8, 'order': 'last'},
                 ),

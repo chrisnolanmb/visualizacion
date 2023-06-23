@@ -226,7 +226,7 @@ app.layout = dbc.Container(
                                     dbc.Label("Selecciona un Estado"),
                                     dcc.Dropdown(
                                         style={'background-color': '#696969',
-                                               'color': '#FEFEF9', 'border-radius': 20},
+                                               'color': 'black', 'border-radius': 20},
                                         id="estado",
                                         options=[
                                             {"label": col, "value": col} for col in estados
@@ -237,6 +237,7 @@ app.layout = dbc.Container(
                                 ),
                             ],
                             body=True,
+                            class_name="dark_tab",
                         ),
                         dbc.Row(
                             [

@@ -81,5 +81,11 @@ body {
 .dropdown {
     position: relative;
     display: 30%;
-    margin-left: 20px;
+}
+
+.dark_tab {
+    border-radius: var(--corner);
+    color: var(--main-bg-color) !important;
+    background-color: var(--dark-bg-color);
+    margin-bottom: 20px;
 }

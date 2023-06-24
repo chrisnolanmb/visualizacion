@@ -279,7 +279,8 @@ app.layout = dbc.Container(
                                              selected_className='custom-tab--selected'
                                              )
                                  ]),
-                        dcc.Graph(figure={}, id='maps', config={
+                        dcc.Graph(figure={}, id='maps', style={'border-radius': '20px !important',
+                                                               'box-shadow': '0px 4px 4px rgba(0, 0, 0, 0.25)', 'margin': '0px'}, config={
                                   'displayModeBar': False})
                     ],
                     # Adjust the width of the column
@@ -344,6 +345,7 @@ def render_content(tab, estado):
                                     # df["¿La Institución es pública o privada?"]]
                                 ],
                                 size=df["size"],
+                                # mapbox_style={'border-size': 0},
                                 color_discrete_sequence=["green"]
                                 )
     elif tab == 'tab-2':

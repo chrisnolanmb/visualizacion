@@ -67,7 +67,8 @@ app.layout = dbc.Container(
                         dbc.Card(
                             [
                                 html.Div(className="", children=[
-                                    dbc.Label("Selecciona un Estado"),
+                                    dbc.Label("Selecciona un Estado",
+                                              style={'color': 'white', 'font-size': 28}),
                                     dcc.Dropdown(
                                         style={'background-color': '#696969',
                                                'color': 'black', 'border-radius': 5},
@@ -110,17 +111,17 @@ app.layout = dbc.Container(
                                      dcc.Tab(label='Licenciatura',
                                              value='tab-1',
                                              className='custom-tab',
-                                             selected_className='custom-tab--selected'
+                                             selected_className='custom-tab--selected lic'
                                              ),
                                      dcc.Tab(label='Maestría',
                                              value='tab-2',
                                              className='custom-tab',
-                                             selected_className='custom-tab--selected'
+                                             selected_className='custom-tab--selected mas'
                                              ),
                                      dcc.Tab(label='Doctorado',
                                              value='tab-3',
                                              className='custom-tab',
-                                             selected_className='custom-tab--selected'
+                                             selected_className='custom-tab--selected doc'
                                              )
                                  ]),
                         dcc.Graph(
@@ -206,7 +207,7 @@ def render_content(tab, estado):
                         <b>Dirección física:</b> %{customdata[3]}<br>
                         <b>Correo:</b> %{customdata[4]}<br>
                         <b>Sede:</b> %{customdata[5]}<br>
-                        <b>Página web del programa:</b> <a href="%{customdata[6]}" target="_blank">%{customdata[6]}</a><br>
+                        <b>Página web del programa:</b> <a href="%{customdata[6]}" target="_blank">%{customdata[6]} </a><br>
                     """
     if tab == 'tab-1':
         df = df_lic
@@ -218,16 +219,16 @@ def render_content(tab, estado):
                                 height=800,
                                 center={"lat": 23.6345, "lon": -102.5528},
                                 size=df["size"],
-                                color_discrete_sequence=["green"]
+                                color_discrete_sequence=["#00667C"]
                                 )
         fig.update_traces(customdata=df[["Institución/Universidad", "Nombre de la Carrera (Licenciatura)", "¿Pertenece al PNPC?", "Dirección física (Licenciatura)", "Correo", "Sede (Licenciatura)", "Página web del programa de Licenciatura (si hubiera)"]],
                           hovertemplate=hover_template)
         fig.update_layout(hoverlabel=dict(
-            bgcolor="white",
-            font_size=12,
-            font_family="Arial",
-            font_color="black",
-            bordercolor="black"
+            bgcolor="rgba( 36, 36, 36, 0.65)",
+            font_size=16,
+            font_family="Raleway",
+            font_color="white",
+            bordercolor="rgba( 36, 36, 36, 0.65 )"
         ), margin=dict(l=0, r=0, t=0, b=0))
     elif tab == 'tab-2':
         df = df_master
@@ -239,15 +240,15 @@ def render_content(tab, estado):
                                 height=800,
                                 center={"lat": 23.6345, "lon": -102.5528},
                                 size=df_master["size"],
-                                color_discrete_sequence=["orange"])
+                                color_discrete_sequence=["#E85D7E"])
         fig.update_traces(customdata=df[["Institución/Universidad", "Nombre del Programa (Maestría)", "¿Pertenece al PNPC? (Maestría)", "Dirección física (Maestría)", "Correo", "Sede (Maestría)", "Página web del programa de Maestría (si hubiera)"]],
                           hovertemplate=hover_template)
         fig.update_layout(hoverlabel=dict(
-            bgcolor="white",
-            font_size=12,
-            font_family="Arial",
-            font_color="black",
-            bordercolor="black"
+            bgcolor="rgba( 36, 36, 36, 0.65)",
+            font_size=16,
+            font_family="Raleway",
+            font_color="white",
+            bordercolor="rgba( 36, 36, 36, 0.65 )"
         ), margin=dict(l=0, r=0, t=0, b=0))
     else:
         df = df_doc
@@ -258,16 +259,16 @@ def render_content(tab, estado):
                                 zoom=4.7,
                                 height=800,
                                 center={"lat": 23.6345, "lon": -102.5528},
-                                color_discrete_sequence=["red"],
+                                color_discrete_sequence=["#7D5CB8"],
                                 size=df_doc["size"])
         fig.update_traces(customdata=df[["Institución/Universidad", "Nombre del programa de Doctorado", "¿Pertenece al PNPC? (Doctorado)", "Dirección física (Doctorado)", "Correo", "Sede (Doctorado)", "Página web del programa de Doctorado (si hubiera)"]],
                           hovertemplate=hover_template)
         fig.update_layout(hoverlabel=dict(
-            bgcolor="white",
-            font_size=12,
-            font_family="Arial",
-            font_color="black",
-            bordercolor="black"
+            bgcolor="rgba( 36, 36, 36, 0.65)",
+            font_size=16,
+            font_family="Raleway",
+            font_color="white",
+            bordercolor="rgba( 36, 36, 36, 0.65 )"
         ), margin=dict(l=0, r=0, t=0, b=0))
 
     zoom_levels = {

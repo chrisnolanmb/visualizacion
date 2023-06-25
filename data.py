@@ -103,6 +103,8 @@ df_lic = df.drop(["¿Pertenece al PNPC? (Maestría)",
 
 df_lic = df_lic.drop([1,3,9,22,25,27,37,35])
 df_lic = df_lic.reset_index(drop=True)
+df_lic['¿Pertenece al PNPC?'] = 'No aplica'
+
 # df_lic
 
 

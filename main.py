@@ -137,6 +137,14 @@ app.layout = dbc.Container(
             justify="between",
             align="center",
         ),
+        # crear otra fila con columnas
+        dbc.Row(
+            [
+                dbc.Col(id="general-stats"),
+                # dbc.Col(id="sunburst-chart"),
+            ]
+        ),
+
     ],
     fluid=True,
 )

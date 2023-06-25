@@ -10,10 +10,14 @@
     --green: #CFEABC;
     --darkGreen: #B3D5AB;
     --purple: #7D5CB8;
-    --corner: 5px;
+    --corner: 7px;
     --shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     --darkBlue: #00667C;
 
+}
+
+h1 {
+    margin-bottom: 30px;
 }
 
 .primera-columna {
@@ -38,8 +42,9 @@ body {
 
 .colMapa {
     border-radius: var(--corner);
-    margin-top: 10px;
+    margin-top: 0px;
     padding: 0px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     /* margin-bottom: -20px;
     margin-left: -50px;
     margin-right: -50px;
@@ -59,7 +64,7 @@ body {
 .glassmorphism {
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(10px);
-    border-radius: 10px;
+    border-radius: var(--corner);
     padding: 10px;
     margin-bottom: 10px;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -94,6 +99,7 @@ body {
 .custom-tab--selected {
     color: var(--main-bg-color) !important;
     background-color: var(--selected-bg-color) !important;
+    border-radius: 7px 7px 0px 0px;
 
 
 }
@@ -118,19 +124,24 @@ body {
     border-radius: var(--corner);
 }
 
+.shadow {
+    box-shadow: var(--shadow) !important;
+}
+
 .custom-tabs {
     width: 80%;
     display: 70%;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    margin-top: 20px;
+    margin-top: 200px;
     padding-left: 10%;
 }
 
 .dropdown {
     position: relative;
     display: 30%;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     /* color: white !important; */
 }
 

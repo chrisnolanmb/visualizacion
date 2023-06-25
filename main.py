@@ -71,18 +71,21 @@ app.layout = dbc.Container(
                                               style={'color': 'white', 'font-size': 28}),
                                     dcc.Dropdown(
                                         style={'background-color': '#696969',
-                                               'color': 'black', 'border-radius': 5},
+                                               'color': 'black', 'border-radius': 5, 'border': '1px solid rgba(255, 255, 255, 0.18)'},
                                         id="estado",
                                         options=[
                                             {"label": col, "value": col} for col in estados
                                         ],
                                         value="",
                                     ),
-                                ]
+                                ],
+
                                 ),
                             ],
                             body=True,
-                            class_name="card-title",
+                            class_name="shadow card-title ",
+                            style={
+                                'border': '1px solid rgba(255, 255, 255, 0.18)'},
                         ),
                         # dbc.Row(
                         #     [
@@ -133,13 +136,13 @@ app.layout = dbc.Container(
                                 'displayModeBar': False})
                     ],
                     # Adjust the width of the column
-                    className='colMapa',
+                    className='colMapa shadow',
                     width={'size': 12, 'order': 'last'},
                     lg={'size': 8, 'order': 'last'},
                 ),
             ],
             justify="between",
-            align="center",
+            align="start",
         ),
         # crear otra fila con columnas
         dbc.Row(
@@ -436,7 +439,7 @@ def update_stats(tab, estado):
                             ]
                         ),
                     ],
-                    className="card border-secondary mb-3",
+                    className="card border-secondary mb-3 shadow",
                 )
             )
             cards.append(
@@ -446,13 +449,13 @@ def update_stats(tab, estado):
                         dbc.CardBody(
                             [
                                 html.H4("Total de Instituciones Privadas:",
-                                        className="card-title"),
+                                        className="shadow card-title"),
                                 html.H5(f"\t{total_privadas}",
                                         className="card-text"),
                             ]
                         ),
                     ],
-                    className="card border-secondary mb-3",
+                    className="card border-secondary mb-3 shadow",
                 )
             )
 
@@ -475,13 +478,13 @@ def update_stats(tab, estado):
                         dbc.CardBody(
                             [
                                 html.H4(
-                                    "Total de Instituciones pertenecientes al PNPC:", className="card-title"),
+                                    "Total de Instituciones pertenecientes al PNPC:", className="card-title shadow"),
                                 html.H5(f"\t{total_pnpc}",
                                         className="card-text"),
                             ]
                         ),
                     ],
-                    className="card border-secondary mb-3",
+                    className="card border-secondary mb-3 shadow",
                 )
             )
 
@@ -527,8 +530,22 @@ def update_general_stats(tab):
                         dbc.CardBody(
                             [
                                 html.H4("Total de Programas:",
-                                        className="card-title"),
+                                        className="card-title shadow"),
                                 html.H5(f"\t{total_programs}",
+                                        className="card-text"),
+                            ]
+                        ),
+                    ],
+                    className="card border-secondary mb-3",
+                ),
+                dbc.Card(
+                    [
+                        dbc.CardHeader("Por nivel edicativo"),
+                        dbc.CardBody(
+                            [
+                                html.H4("Total de Programas PNPC:",
+                                        className="card-title shadow"),
+                                html.H5(f"\t{total_pnpc}",
                                         className="card-text"),
                             ]
                         ),
@@ -536,25 +553,7 @@ def update_general_stats(tab):
                     className="card border-secondary mb-3",
                 )
             ],
-            width=4
-        )
-    )
-    cards.append(
-        dbc.Col([
-            dbc.Card(
-                [
-                    dbc.CardHeader("Por nivel edicativo"),
-                    dbc.CardBody(
-                        [
-                            html.H4("Total de Programas PNPC:",
-                                    className="card-title"),
-                            html.H5(f"\t{total_pnpc}", className="card-text"),
-                        ]
-                    ),
-                ],
-                className="card border-secondary mb-3",
-            )
-        ], width=4
+            width=12
         )
     )
 
@@ -578,7 +577,7 @@ def update_general_stats(tab):
                 ],
                 className="card border-secondary mb-3",
             )
-        ], width=6)
+        ], width=8)
 
     )
 

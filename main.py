@@ -83,7 +83,7 @@ app.layout = dbc.Container(
                                 ),
                             ],
                             body=True,
-                            class_name="shadow card-title ",
+                            class_name="card-title shadow ",
                             style={
                                 'border': '1px solid rgba(255, 255, 255, 0.18)'},
                         ),
@@ -449,7 +449,7 @@ def update_stats(tab, estado):
                         dbc.CardBody(
                             [
                                 html.H4("Total de Instituciones Privadas:",
-                                        className="shadow card-title"),
+                                        className="card-title"),
                                 html.H5(f"\t{total_privadas}",
                                         className="card-text"),
                             ]
@@ -478,7 +478,7 @@ def update_stats(tab, estado):
                         dbc.CardBody(
                             [
                                 html.H4(
-                                    "Total de Instituciones pertenecientes al PNPC:", className="card-title shadow"),
+                                    "Total de Instituciones pertenecientes al PNPC:", className="card-title"),
                                 html.H5(f"\t{total_pnpc}",
                                         className="card-text"),
                             ]
@@ -530,7 +530,7 @@ def update_general_stats(tab):
                         dbc.CardBody(
                             [
                                 html.H4("Total de Programas:",
-                                        className="card-title shadow"),
+                                        className="card-title"),
                                 html.H5(f"\t{total_programs}",
                                         className="card-text"),
                             ]
@@ -544,7 +544,7 @@ def update_general_stats(tab):
                         dbc.CardBody(
                             [
                                 html.H4("Total de Programas PNPC:",
-                                        className="card-title shadow"),
+                                        className="card-title"),
                                 html.H5(f"\t{total_pnpc}",
                                         className="card-text"),
                             ]

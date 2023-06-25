@@ -139,10 +139,11 @@ app.layout = dbc.Container(
         ),
         # crear otra fila con columnas
         dbc.Row(
-            [
-                dbc.Col(id="general-stats"),
-                # dbc.Col(id="sunburst-chart"),
-            ]
+            id="general-stats"
+            # [
+            #     dbc.Col(id="general-stats"),
+            #     # dbc.Col(id="sunburst-chart"),
+            # ]
         ),
 
     ],
@@ -293,11 +294,11 @@ def render_content(tab, estado):
         'Quintana Roo': 9,
         'San Luis Potosí': 9,
         'Sinaloa': 8,
-        'Sonora': 8,
+        'Sonora': 7.5,
         'Tabasco': 9,
         'Tamaulipas': 6.5,
         'Tlaxcala': 11,
-        'Veracruz': 8,
+        'Veracruz': 7.5,
         'Yucatán': 9,
         'Zacatecas': 9,
     }
@@ -483,6 +484,8 @@ def update_stats(tab, estado):
     return cards
 
 # Callback para actualizar las estadísticas generales y los gráficos de totales
+
+
 @app.callback(
     Output('general-stats', 'children'),
     [Input('tabs', 'value')]
@@ -512,32 +515,42 @@ def update_general_stats(tab):
 
     # Crear tarjetas para las estadísticas generales
     cards.append(
-        dbc.Card(
+        dbc.Col(
             [
-                dbc.CardHeader("Estadísticas Generales por nivel edicativo"),
-                dbc.CardBody(
+                dbc.Card(
                     [
-                        html.H4("Total de Programas:", className="card-title"),
-                        html.H5(f"\t{total_programs}", className="card-text"),
-                    ]
-                ),
+                        dbc.CardHeader("Por nivel edicativo"),
+                        dbc.CardBody(
+                            [
+                                html.H4("Total de Programas:",
+                                        className="card-title"),
+                                html.H5(f"\t{total_programs}",
+                                        className="card-text"),
+                            ]
+                        ),
+                    ],
+                    className="card border-secondary mb-3",
+                )
             ],
-            className="card border-secondary mb-3",
+            width=4
         )
     )
     cards.append(
-        dbc.Card(
-            [
-                dbc.CardHeader("Estadísticas Generales por nivel edicativo"),
-                dbc.CardBody(
-                    [
-                        html.H4("Total de Programas PNPC:",
-                                className="card-title"),
-                        html.H5(f"\t{total_pnpc}", className="card-text"),
-                    ]
-                ),
-            ],
-            className="card border-secondary mb-3",
+        dbc.Col([
+            dbc.Card(
+                [
+                    dbc.CardHeader("Por nivel edicativo"),
+                    dbc.CardBody(
+                        [
+                            html.H4("Total de Programas PNPC:",
+                                    className="card-title"),
+                            html.H5(f"\t{total_pnpc}", className="card-text"),
+                        ]
+                    ),
+                ],
+                className="card border-secondary mb-3",
+            )
+        ], width=4
         )
     )
 
@@ -553,34 +566,45 @@ def update_general_stats(tab):
     graph = dcc.Graph(figure=fig)
 
     cards.append(
-        dbc.Card(
+        dbc.Col([
+            dbc.Card(
             [
-                dbc.CardHeader("Gráfico de Totales por Tipo de Programa"),
+                dbc.CardHeader("Por nivel educativo"),
                 dbc.CardBody(graph),
             ],
             className="card border-secondary mb-3",
         )
+        ],width=6)
+        
     )
 
-    df_lic["Nivel educativo"]= 'Licenciatura'
+    df_lic["Nivel educativo"] = 'Licenciatura'
     df_master["Nivel educativo"] = "Maestría"
     df_doc["Nivel educativo"] = 'Doctorado'
 
-    df_count_lic = df_lic.groupby(['Nivel educativo', 'Entidad Federativa donde se imparte']).size().reset_index(name='Total')
-    df_count_master = df_master.groupby(['Nivel educativo','Entidad Federativa donde se imparte']).size().reset_index(name='Total')
-    df_count_doc = df_doc.groupby(['Nivel educativo','Entidad Federativa donde se imparte']).size().reset_index(name='Total')
-    df_combined = pd.concat([df_count_lic, df_count_master, df_count_doc], ignore_index=True)
+    df_count_lic = df_lic.groupby(['Nivel educativo', 'Entidad Federativa donde se imparte', 'Institución/Universidad']).size().reset_index(name='Total')
+    df_count_master = df_master.groupby(['Nivel educativo','Entidad Federativa donde se imparte','Institución/Universidad']).size().reset_index(name='Total')
+    df_count_doc = df_doc.groupby(['Nivel educativo','Entidad Federativa donde se imparte','Institución/Universidad']).size().reset_index(name='Total')
     
-    fig_sunburst = px.sunburst(df_combined, path=['Nivel educativo', 'Entidad Federativa donde se imparte'], values='Total') 
+    df_combined = pd.concat(
+        [df_count_lic, df_count_master, df_count_doc], ignore_index=True)
 
+    fig_sunburst = px.sunburst(df_combined, path=[
+                               'Nivel educativo', 'Entidad Federativa donde se imparte', 'Institución/Universidad'], values='Total')
     cards.append(
-        dbc.Card(
-            [
-                dbc.CardHeader("Gráfico de Sunburst por Nivel Educativo y Estado"),
-                dbc.CardBody(dcc.Graph(figure=fig_sunburst)),
-            ],
-            className="card border-secondary mb-3",
+        dbc.Col([
+            dbc.Card(
+                [
+                    dbc.CardHeader(
+                        "Gráfico de Sunburst por Nivel Educativo y Estado"),
+                    dbc.CardBody(dcc.Graph(figure=fig_sunburst)),
+                ],
+                className="card border-secondary mb-3",
+            )
+        ],
+            width=5
         )
+
     )
 
     return cards

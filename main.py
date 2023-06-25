@@ -6,6 +6,7 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import dash_bootstrap_components as dbc
 import pandas as pd
+import plotly.graph_objects as go
 
 # leer los dataframe de las licenciaturas, maestrias y doctorados
 df_lic = data.df_lic
@@ -65,11 +66,11 @@ app.layout = dbc.Container(
                     [
                         dbc.Card(
                             [
-                                html.Div(className="dropdown", children=[
+                                html.Div(className="", children=[
                                     dbc.Label("Selecciona un Estado"),
                                     dcc.Dropdown(
                                         style={'background-color': '#696969',
-                                               'color': 'black', 'border-radius': 20},
+                                               'color': 'black', 'border-radius': 5},
                                         id="estado",
                                         options=[
                                             {"label": col, "value": col} for col in estados
@@ -80,7 +81,7 @@ app.layout = dbc.Container(
                                 ),
                             ],
                             body=True,
-                            class_name="dark_tab",
+                            class_name="card-title",
                         ),
                         # dbc.Row(
                         #     [
@@ -122,11 +123,12 @@ app.layout = dbc.Container(
                                              selected_className='custom-tab--selected'
                                              )
                                  ]),
-                        dcc.Graph(className="mapa",
-                                  figure={}, id='maps', style={'border-radius': '20px !important',
-                                                               'box-shadow': '0px 4px 4px rgba(0, 0, 0, 0.25)', 'margin': '0px', 'background-color': 'transparent'},
-                                  config={
-                                      'displayModeBar': False})
+                        dcc.Graph(
+                            figure={}, id='maps', style={'box-sizing': 'border-box', 'border-width': '1px',
+                                                         'paper_bgcolor': 'rgba(0,0,0,0)',
+                                                         'plot_bgcolor': 'rgba(0,0,0,0)'},
+                            config={
+                                'displayModeBar': False})
                     ],
                     # Adjust the width of the column
                     className='colMapa',
@@ -226,7 +228,7 @@ def render_content(tab, estado):
             font_family="Arial",
             font_color="black",
             bordercolor="black"
-        ))
+        ), margin=dict(l=0, r=0, t=0, b=0))
     elif tab == 'tab-2':
         df = df_master
         df_master['size'] = 10
@@ -246,7 +248,7 @@ def render_content(tab, estado):
             font_family="Arial",
             font_color="black",
             bordercolor="black"
-        ))
+        ), margin=dict(l=0, r=0, t=0, b=0))
     else:
         df = df_doc
         df_doc['size'] = 10
@@ -266,7 +268,7 @@ def render_content(tab, estado):
             font_family="Arial",
             font_color="black",
             bordercolor="black"
-        ))
+        ), margin=dict(l=0, r=0, t=0, b=0))
 
     zoom_levels = {
         'Aguascalientes': 12,
@@ -426,7 +428,7 @@ def update_stats(tab, estado):
                         dbc.CardBody(
                             [
                                 html.H4("Total de Instituciones Públicas:",
-                                        className="card-title"),
+                                        className="c"),
                                 html.H5(f"\t{total_publicas}",
                                         className="card-text"),
                             ]
@@ -568,24 +570,27 @@ def update_general_stats(tab):
     cards.append(
         dbc.Col([
             dbc.Card(
-            [
-                dbc.CardHeader("Por nivel educativo"),
-                dbc.CardBody(graph),
-            ],
-            className="card border-secondary mb-3",
-        )
-        ],width=6)
-        
+                [
+                    dbc.CardHeader("Por nivel educativo"),
+                    dbc.CardBody(graph),
+                ],
+                className="card border-secondary mb-3",
+            )
+        ], width=6)
+
     )
 
     df_lic["Nivel educativo"] = 'Licenciatura'
     df_master["Nivel educativo"] = "Maestría"
     df_doc["Nivel educativo"] = 'Doctorado'
 
-    df_count_lic = df_lic.groupby(['Nivel educativo', 'Entidad Federativa donde se imparte', 'Institución/Universidad']).size().reset_index(name='Total')
-    df_count_master = df_master.groupby(['Nivel educativo','Entidad Federativa donde se imparte','Institución/Universidad']).size().reset_index(name='Total')
-    df_count_doc = df_doc.groupby(['Nivel educativo','Entidad Federativa donde se imparte','Institución/Universidad']).size().reset_index(name='Total')
-    
+    df_count_lic = df_lic.groupby(['Nivel educativo', 'Entidad Federativa donde se imparte',
+                                  'Institución/Universidad']).size().reset_index(name='Total')
+    df_count_master = df_master.groupby(
+        ['Nivel educativo', 'Entidad Federativa donde se imparte', 'Institución/Universidad']).size().reset_index(name='Total')
+    df_count_doc = df_doc.groupby(['Nivel educativo', 'Entidad Federativa donde se imparte',
+                                  'Institución/Universidad']).size().reset_index(name='Total')
+
     df_combined = pd.concat(
         [df_count_lic, df_count_master, df_count_doc], ignore_index=True)
 

@@ -2,7 +2,7 @@
 
 :root {
     --main-bg-color: #FEFEF9;
-    --dark-bg-color: black;
+    --dark-bg-color: #242424;
     --selected-bg-color: #696969;
     --cards-bg-color: #EAEAEA;
     --blue: #9CCED9;
@@ -10,7 +10,7 @@
     --green: #CFEABC;
     --darkGreen: #B3D5AB;
     --purple: #7D5CB8;
-    --corner: 20px;
+    --corner: 5px;
     --shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
 }
@@ -19,17 +19,18 @@ body {
     font-family: 'Raleway';
     background-color: var(--main-bg-color);
     background-image: url('bg.png');
+    margin: 1%;
+    /* margin-right: 20px; */
     /* background-repeat: no-repeat; */
     /* background: #413232; */
     /* background: linear-gradient(to right, #1b4e77, #3d3b3b, #ffffff); */
-/* margin-left: -10px; */
+    /* margin-left: -10px; */
 }
 
 .colMapa {
     border-radius: var(--corner);
-    box-shadow: var(--shadow);
+    margin: 0px;
     padding: 0px;
-    z-index: 10;
     /* margin-bottom: -20px;
     margin-left: -50px;
     margin-right: -50px;
@@ -71,13 +72,14 @@ body {
     border-left: 0px !important;
     border-right: 0px !important;
     border-bottom: 0px !important;
-    background-color: #080808 !important;
+    background-color: var(--dark-bg-color) !important;
     padding: 12px !important;
     font-family: "system-ui";
     display: flex !important;
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid #e7ac0a;
+
 }
 
 .custom-tab--selected {
@@ -92,11 +94,13 @@ body {
 }
 
 .custom-tabs {
+    width: 80%;
     display: 70%;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
     margin-top: 20px;
+    padding-left: 10%;
 }
 
 .dropdown {
@@ -181,8 +185,13 @@ body {
 
 
 
-.main-svg{
+.main-svg {
     background: transparent !important;
     /* margin-left: -10px !important; */
+
+}
+
+#maps {
+    background-color: #080808;
 
 }

@@ -556,28 +556,28 @@ def update_general_stats(tab):
                 ], )
     )
 
-    # Generar gráfico de totales por tipo de programa
-    df_totals = pd.DataFrame({
-        'Tipo de Programa': ['Licenciatura', 'Maestría', 'Doctorado'],
-        'Total': [len(df_lic), len(df_master), len(df_doc)]
-    })
+    # # Generar gráfico de totales por tipo de programa
+    # df_totals = pd.DataFrame({
+    #     'Tipo de Programa': ['Licenciatura', 'Maestría', 'Doctorado'],
+    #     'Total': [len(df_lic), len(df_master), len(df_doc)]
+    # })
 
-    fig = px.bar(df_totals, x='Tipo de Programa', y='Total', color='Tipo de Programa',
-                 labels={'Total': 'Total de Programas', 'Tipo de Programa': 'Tipo de Programa'})
-    fig.update_layout(title_text='Totales por Tipo de Programa')
-    graph = dcc.Graph(figure=fig)
+    # fig = px.bar(df_totals, x='Tipo de Programa', y='Total', color='Tipo de Programa',
+    #              labels={'Total': 'Total de Programas', 'Tipo de Programa': 'Tipo de Programa'})
+    # fig.update_layout(title_text='Totales por Tipo de Programa')
+    # graph = dcc.Graph(figure=fig)
 
-    cards.append(
-        dbc.Col([
-            dbc.Card(
-                [
-                    dbc.CardHeader("Por nivel educativo"),
-                    dbc.CardBody(graph),
-                ],
-                className="card border-secondary mb-3",
-            )
-        ], width=8)
-    )
+    # cards.append(
+    #     dbc.Col([
+    #         dbc.Card(
+    #             [
+    #                 dbc.CardHeader("Por nivel educativo"),
+    #                 dbc.CardBody(graph),
+    #             ],
+    #             className="card border-secondary mb-3",
+    #         )
+    #     ], width=8)
+    # )
 
     df_lic["Nivel educativo"] = 'Licenciatura'
     df_master["Nivel educativo"] = "Maestría"

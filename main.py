@@ -52,7 +52,7 @@ app.layout = dbc.Container(
                                         options=[
                                             {"label": col, "value": col} for col in estados
                                         ],
-                                        value="",
+                                        value="vacio",
                                     ),
                                 ],
 
@@ -353,7 +353,7 @@ def render_content(tab, estado):
                 'zoom': 4.2,
                 'style': 'open-street-map'
             },
-            tittle_text='Programas de Doctorado en México'
+            # tittle_text='Programas de Doctorado en México'
         )
 
         fig.update_layout(
@@ -386,7 +386,60 @@ def update_stats(tab, estado):
     '''
     cards = []  # Lista para almacenar las tarjetas
 
-    if estado is not None:
+    if estado == "vacio":
+        if tab == 'tab-1':
+            total_programs = len(df_lic)
+            total_pnpc = len(
+                df_lic[df_lic['¿Pertenece al PNPC?'] != 'No aplica'])
+        elif tab == 'tab-2':
+            total_programs = len(df_master)
+            total_pnpc = len(
+                df_master[df_master['¿Pertenece al PNPC? (Maestría)'].isin(["Si", "Sí"])])
+        elif tab == 'tab-3':
+            total_programs = len(df_doc)
+            total_pnpc = len(
+                df_doc[df_doc['¿Pertenece al PNPC? (Doctorado)'] == 'Si'])
+        else:
+            total_programs = 0
+            total_pnpc = 0
+
+        # Crear tarjetas para las estadísticas generales
+        cards.append(
+            dbc.Col(
+                [
+                    dbc.Card(
+                        [
+                            dbc.CardHeader("Por nivel edicativo"),
+                            dbc.CardBody(
+                                [
+                                    html.H4("Total de Programas:",
+                                            className="card-title"),
+                                    html.H5(f"\t{total_programs}",
+                                            className="card-text"),
+                                ]
+                            ),
+                        ],
+                        className="card border-secondary mb-3",
+                    ),
+                    dbc.Card(
+                        [
+                            dbc.CardHeader("Por nivel edicativo"),
+                            dbc.CardBody(
+                                [
+                                    html.H4("Total de Programas PNPC:",
+                                            className="card-title"),
+                                    html.H5(f"\t{total_pnpc}",
+                                            className="card-text"),
+                                ]
+                            ),
+                        ],
+                        className="card border-secondary mb-3",
+                    )
+                ],
+            )
+        )
+
+    if estado != "vacio":
         if tab == 'tab-1':
             df_estado = df_lic[df_lic['Entidad Federativa donde se imparte'] == estado]
         elif tab == 'tab-2':
@@ -480,57 +533,27 @@ def update_general_stats(tab):
     '''
     cards = []  # Lista para almacenar las tarjetas
     total_pnpc = 0
-    # Obtener los totales generales según la pestaña seleccionada
-    if tab == 'tab-1':
-        total_programs = len(df_lic)
-        total_pnpc = len(df_lic[df_lic['¿Pertenece al PNPC?'] != 'No aplica'])
-    elif tab == 'tab-2':
-        total_programs = len(df_master)
-        total_pnpc = len(
-            df_master[df_master['¿Pertenece al PNPC? (Maestría)'].isin(["Si", "Sí"])])
-    elif tab == 'tab-3':
-        total_programs = len(df_doc)
-        total_pnpc = len(
-            df_doc[df_doc['¿Pertenece al PNPC? (Doctorado)'] == 'Si'])
-    else:
-        total_programs = 0
-        total_pnpc = 0
+    # Generar gráfico de totales por tipo de programa
+    df_totals = pd.DataFrame({
+        'Tipo de Programa': ['Licenciatura', 'Maestría', 'Doctorado'],
+        'Total': [len(df_lic), len(df_master), len(df_doc)]
+    })
 
-    # Crear tarjetas para las estadísticas generales
+    fig = px.bar(df_totals, x='Tipo de Programa', y='Total', color='Tipo de Programa',
+                 labels={'Total': 'Total de Programas', 'Tipo de Programa': 'Tipo de Programa'})
+    fig.update_layout(title_text='Totales por Tipo de Programa')
+    graph = dcc.Graph(figure=fig)
+
     cards.append(
-        dbc.Col(
-            [
+        dbc.Col([
                 dbc.Card(
                     [
-                        dbc.CardHeader("Por nivel edicativo"),
-                        dbc.CardBody(
-                            [
-                                html.H4("Total de Programas:",
-                                        className="card-title"),
-                                html.H5(f"\t{total_programs}",
-                                        className="card-text"),
-                            ]
-                        ),
-                    ],
-                    className="card border-secondary mb-3",
-                ),
-                dbc.Card(
-                    [
-                        dbc.CardHeader("Por nivel edicativo"),
-                        dbc.CardBody(
-                            [
-                                html.H4("Total de Programas PNPC:",
-                                        className="card-title"),
-                                html.H5(f"\t{total_pnpc}",
-                                        className="card-text"),
-                            ]
-                        ),
+                        dbc.CardHeader("Por nivel educativo"),
+                        dbc.CardBody(graph),
                     ],
                     className="card border-secondary mb-3",
                 )
-            ],
-            width=12
-        )
+                ], )
     )
 
     # Generar gráfico de totales por tipo de programa
@@ -554,7 +577,6 @@ def update_general_stats(tab):
                 className="card border-secondary mb-3",
             )
         ], width=8)
-
     )
 
     df_lic["Nivel educativo"] = 'Licenciatura'

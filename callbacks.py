@@ -1,171 +1,32 @@
-import data
-import dash
-from dash import dcc
-from dash import html
-from dash.dependencies import Input, Output
 import plotly.express as px
-import dash_bootstrap_components as dbc
 import pandas as pd
-import plotly.graph_objects as go
-
-# leer los dataframe de las licenciaturas, maestrias y doctorados
-df_lic = data.df_lic
-df_master = data.df_master
-df_doc = data.df_doc
-df = data.df
-
-# Create a dictionary of all the map dataframes
-df_dict = {'Licenciatura': df_lic, 'Maestría': df_master, 'Doctorado': df_doc}
-estados = data.estados_dict
+import dash_bootstrap_components as dbc
+from dash import html
+from dash import dcc
+import data
+from data import df_lic, df_master, df_doc, estados_dict
 
 
-# Crear la aplicación Dash
-app = dash.Dash(__name__, external_stylesheets=[
-    # dbc.themes.BOOTSTRAP,
-    'style.css',
-    # dbc.themes.SOLAR
-    # dbc.themes.FLATLY
-    # dbc.themes.QUARTZ
-    # dbc.themes.VAPOR
-    dbc.themes.CYBORG
-]
-)
+def update_dropdown_options(selected_tab):
+    """
+    Actualiza las opciones del dropdown de estado
+    según la pestaña seleccionada.
 
-# Definir el layout de la aplicació
-app.layout = dbc.Container(
-    [
-        html.H1("Mapa de Programas Educativos"),
-        dbc.Row(
-            [
-                # Columna de las tarjetas y el menú desplegable
-                dbc.Col(
-                    [
-                        dbc.Card(
-                            [
-                                html.Div(className="", children=[
-                                    dbc.Label("Selecciona un Estado"),
-                                    dcc.Dropdown(
-                                        style={'background-color': '#696969',
-                                               'color': 'black', 'border-radius': 5},
-                                        id="estado",
-                                        options=[
-                                            {"label": col, "value": col} for col in estados
-                                        ],
-                                        value="",
-                                    ),
-                                ]
-                                ),
-                            ],
-                            body=True,
-                            class_name="card-title",
-                        ),
-                        # dbc.Row(
-                        #     [
-                        #         dbc.Col(first_card, width=6),
-                        #         dbc.Col(second_card, width=6),
-                        #     ],
-                        #     className="mb-3",
-                        # ),
-                        dbc.Row(
-                            [
-                                dbc.Col(id="stats"),
-                            ]
-                        ),
-                    ],
-                    # Ajustar el ancho de la columna
-                    width={'size': 12, 'order': 'first'},
-                    lg={'size': 4, 'order': 'first'}
-                ),
-                # Columna de las pestañas y el gráfico
-                dbc.Col(
-                    [
-                        dcc.Tabs(id='tabs',
-                                 value='tab-1',
-                                 className='underTabs',
-                                 children=[
-                                     dcc.Tab(label='Licenciatura',
-                                             value='tab-1',
-                                             className='custom-tab',
-                                             selected_className='custom-tab--selected'
-                                             ),
-                                     dcc.Tab(label='Maestría',
-                                             value='tab-2',
-                                             className='custom-tab',
-                                             selected_className='custom-tab--selected'
-                                             ),
-                                     dcc.Tab(label='Doctorado',
-                                             value='tab-3',
-                                             className='custom-tab',
-                                             selected_className='custom-tab--selected'
-                                             )
-                                 ]),
-                        dcc.Graph(
-                            figure={}, id='maps', style={'box-sizing': 'border-box', 'border-width': '1px',
-                                                         'paper_bgcolor': 'rgba(0,0,0,0)',
-                                                         'plot_bgcolor': 'rgba(0,0,0,0)'},
-                            config={
-                                'displayModeBar': False})
-                    ],
-                    # Adjust the width of the column
-                    className='colMapa',
-                    width={'size': 12, 'order': 'last'},
-                    lg={'size': 8, 'order': 'last'},
-                ),
-            ],
-            justify="between",
-            align="center",
-        ),
-        # crear otra fila con columnas
-        dbc.Row(
-            id="general-stats"
-            # [
-            #     dbc.Col(id="general-stats"),
-            #     # dbc.Col(id="sunburst-chart"),
-            # ]
-        ),
+    :param selected_tab: Pestaña seleccionada
+    :return: Opciones del dropdown
+    """
+    options = []
 
-    ],
-    fluid=True,
-)
+    if selected_tab == 'tab-1':
+        options = [{"label": col, "value": col} for col in estados_dict]
+    elif selected_tab == 'tab-2':
+        options = [{"label": col, "value": col} for col in estados_dict]
+    elif selected_tab == 'tab-3':
+        options = [{"label": col, "value": col} for col in estados_dict]
 
-# Callback para actualizar las opciones del menú desplegable de los estados
+    return options
 
 
-@app.callback(
-    Output('estado', 'options'),
-    [Input('tabs', 'value')]
-)
-def update_dropdown_options(tab):
-    '''
-    Actualiza las opciones del menú desplegable de los estados en función de la pestaña seleccionada.
-    Args:
-        tab (str): Pestaña seleccionada en la aplicación Dash.
-    Returns:
-        list: Listado de opciones para el menú desplegable de los estados.
-        Cada opción es un diccionario con una etiqueta ("label") y un valor ("value").
-    '''
-    if tab == 'tab-1':
-        df = df_lic
-    elif tab == 'tab-2':
-        df = df_master
-    else:
-        df = df_doc
-
-    entidad_options = [{'label': entidad, 'value': entidad}
-                       for entidad in df['Entidad Federativa donde se imparte'].unique()]
-
-    return entidad_options
-
-# Callback para renderizar el contenido del gráfico
-
-
-@app.callback(
-    Output('maps', 'figure'),
-    [
-        Input('tabs', 'value'),
-        Input('estado', 'value')
-    ],
-)
 def render_content(tab, estado):
     '''
     Genera una figura interactiva de dispersión en un mapa según la pestaña y estado seleccionados.
@@ -300,20 +161,6 @@ def render_content(tab, estado):
                 mapbox_center={"lat": float(df_estado['lat'].mean()),
                                "lon": float(df_estado['lon'].mean())}
             )
-            # fig.update_layout(mapbox_zoom=6)
-            # fig.update_mapboxes(
-            #     zoom=8,
-            #     style='open-street-map',
-            #     center=dict(lat=df_estado['lat'].mean(),
-            #                 lon=df_estado['lon'].mean())
-            # )
-            # fig.update_layout(
-            #     mapbox={
-            #         'center': {'lat': df_estado['lat'].mean(), 'lon': df_estado['lon'].mean()},
-            #         'zoom': 8,
-            #         'style': 'open-street-map'
-            #     }
-            # )
         else:
             fig.update_layout(
                 mapbox_center={"lat": 23.6345, "lon": -102.5528}
@@ -365,15 +212,7 @@ def render_content(tab, estado):
 
     return fig
 
-# Callback para actualizar las estadísticas al seleccionar cada TAB
 
-
-@app.callback(
-    Output('stats', 'children'),
-    [
-        Input('tabs', 'value'),
-        Input('estado', 'value')]
-)
 def update_stats(tab, estado):
     '''
     Esta función se encarga de actualizar las estadísticas de la entidad federativa seleccionada
@@ -461,13 +300,7 @@ def update_stats(tab, estado):
 
     return cards
 
-# Callback para actualizar las estadísticas generales y los gráficos de totales
 
-
-@app.callback(
-    Output('general-stats', 'children'),
-    [Input('tabs', 'value')]
-)
 def update_general_stats(tab):
     '''
     Esta función se encarga de actualizar las estadísticas generales del dataframe
@@ -556,19 +389,7 @@ def update_general_stats(tab):
 
     )
 
-    df_lic["Nivel educativo"] = 'Licenciatura'
-    df_master["Nivel educativo"] = "Maestría"
-    df_doc["Nivel educativo"] = 'Doctorado'
-
-    df_count_lic = df_lic.groupby(['Nivel educativo', 'Entidad Federativa donde se imparte',
-                                  'Institución/Universidad']).size().reset_index(name='Total')
-    df_count_master = df_master.groupby(
-        ['Nivel educativo', 'Entidad Federativa donde se imparte', 'Institución/Universidad']).size().reset_index(name='Total')
-    df_count_doc = df_doc.groupby(['Nivel educativo', 'Entidad Federativa donde se imparte',
-                                  'Institución/Universidad']).size().reset_index(name='Total')
-
-    df_combined = pd.concat(
-        [df_count_lic, df_count_master, df_count_doc], ignore_index=True)
+    df_combined = obtener_datos_combinados(df_lic, df_master, df_doc)
 
     fig_sunburst = px.sunburst(df_combined, path=[
                                'Nivel educativo', 'Entidad Federativa donde se imparte', 'Institución/Universidad'], values='Total')
@@ -591,5 +412,19 @@ def update_general_stats(tab):
     return cards
 
 
-if __name__ == '__main__':
-    app.run_server(debug=True, port=5000)
+def obtener_datos_combinados(df_lic, df_master, df_doc):
+    df_lic["Nivel educativo"] = 'Licenciatura'
+    df_master["Nivel educativo"] = "Maestría"
+    df_doc["Nivel educativo"] = 'Doctorado'
+
+    df_count_lic = df_lic.groupby(['Nivel educativo', 'Entidad Federativa donde se imparte',
+                                  'Institución/Universidad']).size().reset_index(name='Total')
+    df_count_master = df_master.groupby(
+        ['Nivel educativo', 'Entidad Federativa donde se imparte', 'Institución/Universidad']).size().reset_index(name='Total')
+    df_count_doc = df_doc.groupby(['Nivel educativo', 'Entidad Federativa donde se imparte',
+                                  'Institución/Universidad']).size().reset_index(name='Total')
+
+    df_combined = pd.concat(
+        [df_count_lic, df_count_master, df_count_doc], ignore_index=True)
+
+    return df_combined

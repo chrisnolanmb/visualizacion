@@ -99,7 +99,8 @@ app.layout = dbc.Container(
                     ],
                     # Ajustar el ancho de la columna
                     width={'size': 12, 'order': 'first'},
-                    lg={'size': 4, 'order': 'first'}
+                    lg={'size': 4, 'order': 'first'},
+                    className='primera-columna'
                 ),
                 # Columna de las pestañas y el gráfico
                 dbc.Col(

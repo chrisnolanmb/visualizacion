@@ -16,6 +16,10 @@
 
 }
 
+.primera-columna {
+    align-content: space-between !important;
+}
+
 .enlaces {
     color: var(--blue);
 }

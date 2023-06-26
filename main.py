@@ -182,14 +182,14 @@ def render_content(tab, estado):
         plotly.graph_objects.Figure: Figura interactiva de dispersión en un mapa.
     '''
     hover_template = """
-                        <b>Institución/Universidad:</b> %{customdata[0]}<br>
-                        <b>Nombre del programa: </b> %{customdata[1]}<br>
-                        <b>¿Pertenece al PNPC?:</b> %{customdata[2]}<br>
-                        <b>Dirección física:</b> %{customdata[3]}<br>
-                        <b>Correo:</b> %{customdata[4]}<br>
-                        <b>Sede:</b> %{customdata[5]}<br>
-                        <b>Página web del programa:</b> <a href="%{customdata[6]}" target="_blank">%{customdata[6]} </a><br>
-                    """
+    <b>Institución/Universidad:</b> %{customdata[0]}<br>
+    <b>Nombre del programa:</b> %{customdata[1]}<br>
+    <b>¿Pertenece al PNPC?:</b> %{customdata[2]}<br>
+    <b>Dirección física:</b> %{customdata[3]}<br>
+    <b>Correo:</b> %{customdata[4]}<br>
+    <b>Sede:</b> %{customdata[5]}<br>
+    <b>Página web del programa:</b> <a href="%{customdata[6]}" target="_blank" style="color:white; font-weight:bold;">%{customdata[6]}</a><br>
+    """
     if tab == 'tab-1':
         df = df_lic
         df_lic['size'] = 10
@@ -286,6 +286,7 @@ def render_content(tab, estado):
         'Yucatán': 9,
         'Zacatecas': 9,
     }
+
 
     if estado is not None:
         df_estado = df[df['Entidad Federativa donde se imparte'] == estado]

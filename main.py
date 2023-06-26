@@ -725,12 +725,34 @@ def update_general_stats(tab):
                         "Gráfico de Sunburst por Nivel Educativo y Estado"),
                     dbc.CardBody(dcc.Graph(figure=fig_sunburst)),
                 ],
-                className="card border-secondary mb-3",
+                className="card border-secondary mb-3 shadow",
             )
         ],
-            width=5
+            width={'size': 5},
+
         )
 
+    )
+    fig_sunburst.update_layout(
+        paper_bgcolor='#242424',
+        plot_bgcolor='#242424',
+        modebar=dict(
+            remove=True
+        ),
+        margin=dict(l=0, r=0, t=0, b=0),
+        legend_font=dict(
+            size=16,
+            color='white'
+        )
+
+        # legend=dict(
+        # yanchor="top",
+        # y=0.99,
+        # xanchor="left",
+        # x=0.01,
+        # traceorder='normal',
+        # legend=False)
+        # legend = False
     )
 
     # Convertir el contenido del dataframe a mayúsculas y sin acentos
@@ -809,10 +831,10 @@ def update_general_stats(tab):
                             "Gráfico de Sunburst por Nivel Educativo y Estado"),
                         dbc.CardBody(dcc.Graph(figure=fig_areas)),
                     ],
-                    className="card border-secondary mb-3",
+                    className="card border-secondary mb-3 shadow",
                 )
             ],
-                # width=5
+                width={'size': 6},
                 # height=100
             )
         ]),

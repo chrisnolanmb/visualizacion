@@ -478,7 +478,7 @@ def update_stats(tab, estado):
                                 ]
                             ),
                         ],
-                        className="card border-secondary mb-3",
+                        className="card border-secondary mb-3 shadow",
                     ),
                     dbc.Card(
                         [

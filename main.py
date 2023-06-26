@@ -521,7 +521,7 @@ def update_stats(tab, estado):
                                     ]
                                 ),
                             ],
-                            className="card border-secondary mb-3",
+                            className="card border-secondary mb-3 shadow",
                         )
                     )
 
@@ -656,7 +656,9 @@ def update_general_stats(tab):
         legend_font=dict(
             size=16,
             color='white'
-        )
+        ),
+        width=70
+
 
 
 
@@ -713,7 +715,8 @@ def update_general_stats(tab):
         [df_count_lic, df_count_master, df_count_doc], ignore_index=True)
 
     fig_sunburst = px.sunburst(df_combined, path=[
-                               'Nivel educativo', 'Entidad Federativa donde se imparte', 'Institución/Universidad'], values='Total')
+                               'Nivel educativo', 'Entidad Federativa donde se imparte', 'Institución/Universidad'], values='Total', color_discrete_sequence=[
+        "#00667C", "#E85D7E", "#7D5CB8"])
     cards.append(
         dbc.Col([
             dbc.Card(
@@ -776,6 +779,17 @@ def update_general_stats(tab):
                        labels={"Frecuencia": "Frecuencia", "Nivel": "Nivel de estudio"})
     # Ocultar la leyenda
     fig_areas.update_layout(
+        paper_bgcolor='#242424',
+        plot_bgcolor='#242424',
+        modebar=dict(
+            remove=True
+        ),
+        margin=dict(l=0, r=0, t=0, b=0),
+        legend_font=dict(
+            size=16,
+            color='white'
+        )
+
         # legend=dict(
         # yanchor="top",
         # y=0.99,
@@ -795,7 +809,7 @@ def update_general_stats(tab):
                             "Gráfico de Sunburst por Nivel Educativo y Estado"),
                         dbc.CardBody(dcc.Graph(figure=fig_areas)),
                     ],
-                    className="card border-secondary mb-3 graph-card",
+                    className="card border-secondary mb-3",
                 )
             ],
                 # width=5

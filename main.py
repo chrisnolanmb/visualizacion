@@ -646,7 +646,6 @@ def update_general_stats(tab):
                      "#00667C", "#E85D7E", "#7D5CB8"],
                  )
     fig.update_layout(
-        title_text='Totales por Tipo de Programa',
         plot_bgcolor='#242424',
         paper_bgcolor='#242424',
         modebar=dict(
@@ -656,8 +655,16 @@ def update_general_stats(tab):
         legend_font=dict(
             size=16,
             color='white'
-        )
+        ),
+        font=dict(
+            size=16,
+            color='white'
+        ),
+        legend_entrywidth=50,
 
+        legend_entrywidthmode='pixels',
+        legend_itemwidth=40,
+        legend_orientation='v'
 
 
     )
@@ -723,7 +730,7 @@ def update_general_stats(tab):
                         "Gráfico de Sunburst por Nivel Educativo y Estado"),
                     dbc.CardBody(dcc.Graph(figure=fig_sunburst)),
                 ],
-                className="card border-secondary mb-3",
+                className="card border-secondary mb-3 shadow",
             )
         ]
         )
@@ -731,6 +738,12 @@ def update_general_stats(tab):
     )
     fig_sunburst.update_layout(
         margin=dict(l=0, r=0, t=0, b=0),
+        font=dict(
+            size=16,
+            color='white'
+        ),
+        grid_columns=2,
+
     )
 
     # Convertir el contenido del dataframe a mayúsculas y sin acentos
@@ -788,7 +801,18 @@ def update_general_stats(tab):
         legend_font=dict(
             size=16,
             color='white'
-        )
+        ),
+        font=dict(
+            size=16,
+            color='white'
+        ),
+        legend_entrywidth=300,
+        legend_itemsizing='trace',
+        legend_entrywidthmode='pixels',
+        legend_itemwidth=30,
+        legend_orientation='h',
+        legend_title_side='left',
+        legend_valign='middle'
 
         # legend=dict(
         # yanchor="top",
@@ -806,10 +830,10 @@ def update_general_stats(tab):
                 dbc.Card(
                     [
                         dbc.CardHeader(
-                            "Gráfico de Sunburst por Nivel Educativo y Estado"),
+                            "Gráfico de Áreas de Interés por Nivel Educativo"),
                         dbc.CardBody(dcc.Graph(figure=fig_areas)),
                     ],
-                    className="card border-secondary mb-3",
+                    className="card border-secondary mb-3 shadow",
                 )
             ],
                 # width=5

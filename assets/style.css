@@ -16,7 +16,7 @@
 
 }
 
-h1 {
+h1 h2 {
     margin-bottom: 30px;
 }
 
@@ -150,6 +150,7 @@ body {
     font-size: 16px !important;
     /* height: 150px !important; */
     padding-bottom: 5px;
+    margin-bottom: 40px;
 }
 
 .card h4,
@@ -236,6 +237,16 @@ h5 {
     background-color: #080808;
 
 }
-.graph-card{
+
+.graph-card {
     background-color: #ffffff
+}
+
+.datos-generales {
+    background: var(--selected-bg-color);
+    box-shadow: var(--shadow);
+    border-radius: var(--corner);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding-top: 10px;
+
 }

@@ -120,10 +120,20 @@ app.layout = dbc.Container(
             ],
             justify="between",
             align="start",
+            style={'margin-bottom': 30}
         ),
         # crear otra fila con columnas
         dbc.Row(
-            id="general-stats"
+            [
+                html.H2("Datos Generales"),
+                dbc.Col(
+                    id="general-stats",
+                )
+            ],
+
+
+            className='datos-generales'
+
             # [
             #     dbc.Col(id="general-stats"),
             #     # dbc.Col(id="sunburst-chart"),
@@ -197,7 +207,7 @@ def render_content(tab, estado):
                                 lat=df["lat"],
                                 lon=df.lon,
                                 zoom=4.7,
-                                height=800,
+                                height=700,
                                 center={"lat": 23.6345, "lon": -102.5528},
                                 size=df["size"],
                                 color_discrete_sequence=["#00667C"]
@@ -218,7 +228,7 @@ def render_content(tab, estado):
                                 lat=df["lat"],
                                 lon=df.lon,
                                 zoom=4.7,
-                                height=800,
+                                height=700,
                                 center={"lat": 23.6345, "lon": -102.5528},
                                 size=df_master["size"],
                                 color_discrete_sequence=["#E85D7E"])
@@ -238,7 +248,7 @@ def render_content(tab, estado):
                                 lat=df["lat"],
                                 lon=df.lon,
                                 zoom=4.7,
-                                height=800,
+                                height=700,
                                 center={"lat": 23.6345, "lon": -102.5528},
                                 color_discrete_sequence=["#7D5CB8"],
                                 size=df_doc["size"])
@@ -286,7 +296,6 @@ def render_content(tab, estado):
         'Yucatán': 9,
         'Zacatecas': 9,
     }
-
 
     if estado is not None:
         df_estado = df[df['Entidad Federativa donde se imparte'] == estado]
@@ -431,9 +440,9 @@ def update_stats(tab, estado):
     # Agregar una columna 'Nivel' para indicar la licenciatura, maestría o doctorado
     df_conteo['Nivel'] = ['Maestría'] * len(conteo_areas_master) + ['Licenciatura'] * len(
         conteo_areas_lic) + ['Doctorado'] * len(conteo_areas_doc)
-    
+
     max_area = df_conteo[df_conteo['Frecuencia'] ==
-                                df_conteo['Frecuencia'].max()]['Área'].iloc[0]
+                         df_conteo['Frecuencia'].max()]['Área'].iloc[0]
     max_area_freq = df_conteo['Frecuencia'].max()
 
     if estado == "vacio":
@@ -442,20 +451,21 @@ def update_stats(tab, estado):
             total_pnpc = len(
                 df_lic[df_lic['¿Pertenece al PNPC?'] != 'No aplica'])
             max_area = conteo_areas_lic[conteo_areas_lic['Frecuencia'] ==
-                                conteo_areas_lic['Frecuencia'].max()]['Área'].iloc[0]
+                                        conteo_areas_lic['Frecuencia'].max()]['Área'].iloc[0]
             max_area_freq = conteo_areas_lic['Frecuencia'].max()
         elif tab == 'tab-2':
             total_programs = len(df_master)
             total_pnpc = len(
                 df_master[df_master['¿Pertenece al PNPC? (Maestría)'].isin(["Si", "Sí"])])
-            max_area = conteo_areas_master[conteo_areas_master['Frecuencia'] == conteo_areas_master['Frecuencia'].max()]['Área'].iloc[0]
+            max_area = conteo_areas_master[conteo_areas_master['Frecuencia']
+                                           == conteo_areas_master['Frecuencia'].max()]['Área'].iloc[0]
             max_area_freq = conteo_areas_master['Frecuencia'].max()
         elif tab == 'tab-3':
             total_programs = len(df_doc)
             total_pnpc = len(
                 df_doc[df_doc['¿Pertenece al PNPC? (Doctorado)'] == 'Si'])
             max_area = conteo_areas_doc[conteo_areas_doc['Frecuencia'] ==
-                                conteo_areas_doc['Frecuencia'].max()]['Área'].iloc[0]
+                                        conteo_areas_doc['Frecuencia'].max()]['Área'].iloc[0]
             max_area_freq = conteo_areas_doc['Frecuencia'].max()
         else:
             total_programs = 0
@@ -630,8 +640,27 @@ def update_general_stats(tab):
     })
 
     fig = px.bar(df_totals, x='Tipo de Programa', y='Total', color='Tipo de Programa',
-                 labels={'Total': 'Total de Programas', 'Tipo de Programa': 'Tipo de Programa'})
-    fig.update_layout(title_text='Totales por Tipo de Programa')
+                 labels={'Total': 'Total de Programas',
+                         'Tipo de Programa': 'Tipo de Programa'},
+                 color_discrete_sequence=[
+                     "#00667C", "#E85D7E", "#7D5CB8"],
+                 )
+    fig.update_layout(
+        title_text='Totales por Tipo de Programa',
+        plot_bgcolor='#242424',
+        paper_bgcolor='#242424',
+        modebar=dict(
+            remove=True
+        ),
+        margin=dict(l=0, r=0, t=0, b=0),
+        legend_font=dict(
+            size=16,
+            color='white'
+        )
+
+
+
+    )
     graph = dcc.Graph(figure=fig)
 
     cards.append(

@@ -7,6 +7,7 @@ import plotly.express as px
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
+from unidecode import unidecode
 
 # leer los dataframe de las licenciaturas, maestrias y doctorados
 df_lic = data.df_lic
@@ -368,6 +369,11 @@ def render_content(tab, estado):
             margin=dict(l=0, r=0, t=0, b=0),  # Set the margin to 0
         )
 
+        # fig.update_traces(
+        #         hovertemplate=hover_template,
+        #         hoverlabel=dict(duration=5000)  # Ajusta aquí el tiempo de permanencia en milisegundos
+        #     ),
+
     return fig
 
 # Callback para actualizar las estadísticas al seleccionar cada TAB
@@ -385,23 +391,76 @@ def update_stats(tab, estado):
     y las coloca en las tarjetas correspondientes.
     '''
     cards = []  # Lista para almacenar las tarjetas
+    # Convertir el contenido del dataframe a mayúsculas y sin acentos
+    df_master['Área(s) de interés (Maestría)'] = df_master['Área(s) de interés (Maestría)'].apply(
+        lambda x: unidecode(x.upper()))
+    df_lic['Área(s) de interés (Licenciatura)'] = df_lic['Área(s) de interés (Licenciatura)'].apply(
+        lambda x: unidecode(x.upper()))
+    df_doc['Área(s) de interés (Doctorado)'] = df_doc['Área(s) de interés (Doctorado)'].apply(
+        lambda x: unidecode(x.upper()))
+
+    # Obtener todas las áreas en una sola columna
+    areas_master = df_master['Área(s) de interés (Maestría)'].str.replace(
+        ';', ',').str.split(',').explode().str.strip()
+    areas_lic = df_lic['Área(s) de interés (Licenciatura)'].str.replace(
+        ';', ',').str.split(',').explode().str.strip()
+    areas_doc = df_doc['Área(s) de interés (Doctorado)'].str.replace(
+        ';', ',').str.split(',').explode().str.strip()
+    # Contar la frecuencia de cada área
+    conteo_areas_master = areas_master.value_counts().reset_index()
+    conteo_areas_lic = areas_lic.value_counts().reset_index()
+    conteo_areas_doc = areas_doc.value_counts().reset_index()
+    # Renombrar las columnas del DataFrame de conteo
+    conteo_areas_master.columns = ['Área', 'Frecuencia']
+    conteo_areas_doc.columns = ['Área', 'Frecuencia']
+    conteo_areas_lic.columns = ['Área', 'Frecuencia']
+
+    # Combinar los dataframes en uno solo
+    # df_conteo = pd.concat([conteo_areas_master, conteo_areas_lic, conteo_areas_doc])
+    # Si funciona
+    # Generar el gráfico utilizando Plotly Express
+    # fig_areas = px.scatter(df_conteo, x="Área", y="Frecuencia", size="Frecuencia", color="Área",
+    #              hover_data=["Área", "Frecuencia"], title="Frecuencia de áreas de interés",
+    #              labels={"Frecuencia": "Frecuencia", "Área": "Área de interés"})
+
+    # Combinar los dataframes en uno solo
+    df_conteo = pd.concat(
+        [conteo_areas_master, conteo_areas_lic, conteo_areas_doc])
+
+    # Agregar una columna 'Nivel' para indicar la licenciatura, maestría o doctorado
+    df_conteo['Nivel'] = ['Maestría'] * len(conteo_areas_master) + ['Licenciatura'] * len(
+        conteo_areas_lic) + ['Doctorado'] * len(conteo_areas_doc)
+    
+    max_area = df_conteo[df_conteo['Frecuencia'] ==
+                                df_conteo['Frecuencia'].max()]['Área'].iloc[0]
+    max_area_freq = df_conteo['Frecuencia'].max()
 
     if estado == "vacio":
         if tab == 'tab-1':
             total_programs = len(df_lic)
             total_pnpc = len(
                 df_lic[df_lic['¿Pertenece al PNPC?'] != 'No aplica'])
+            max_area = conteo_areas_lic[conteo_areas_lic['Frecuencia'] ==
+                                conteo_areas_lic['Frecuencia'].max()]['Área'].iloc[0]
+            max_area_freq = conteo_areas_lic['Frecuencia'].max()
         elif tab == 'tab-2':
             total_programs = len(df_master)
             total_pnpc = len(
                 df_master[df_master['¿Pertenece al PNPC? (Maestría)'].isin(["Si", "Sí"])])
+            max_area = conteo_areas_master[conteo_areas_master['Frecuencia'] == conteo_areas_master['Frecuencia'].max()]['Área'].iloc[0]
+            max_area_freq = conteo_areas_master['Frecuencia'].max()
         elif tab == 'tab-3':
             total_programs = len(df_doc)
             total_pnpc = len(
                 df_doc[df_doc['¿Pertenece al PNPC? (Doctorado)'] == 'Si'])
+            max_area = conteo_areas_doc[conteo_areas_doc['Frecuencia'] ==
+                                conteo_areas_doc['Frecuencia'].max()]['Área'].iloc[0]
+            max_area_freq = conteo_areas_doc['Frecuencia'].max()
         else:
             total_programs = 0
             total_pnpc = 0
+            max_area = "No aplica"
+            max_area_freq = 0
 
         # Crear tarjetas para las estadísticas generales
         cards.append(
@@ -409,7 +468,7 @@ def update_stats(tab, estado):
                 [
                     dbc.Card(
                         [
-                            dbc.CardHeader("Por nivel edicativo"),
+                            dbc.CardHeader("Por nivel educativo"),
                             dbc.CardBody(
                                 [
                                     html.H4("Total de Programas:",
@@ -423,7 +482,7 @@ def update_stats(tab, estado):
                     ),
                     dbc.Card(
                         [
-                            dbc.CardHeader("Por nivel edicativo"),
+                            dbc.CardHeader("Por nivel educativo"),
                             dbc.CardBody(
                                 [
                                     html.H4("Total de Programas PNPC:",
@@ -434,18 +493,48 @@ def update_stats(tab, estado):
                             ),
                         ],
                         className="card border-secondary mb-3",
+                    ),
+                    # Crear tarjeta para el área de interés mayor
+                    cards.append(
+                        dbc.Card(
+                            [
+                                dbc.CardHeader("Área de interés mayor"),
+                                dbc.CardBody(
+                                    [
+                                        html.H5(f"\t{max_area}",
+                                                className="card-text"),
+                                        html.H4("Frecuencia:",
+                                                className="card-title"),
+                                        html.H5(f"\t{max_area_freq}",
+                                                className="card-text"),
+                                    ]
+                                ),
+                            ],
+                            className="card border-secondary mb-3",
+                        )
                     )
+
                 ],
             )
         )
+    # Contar la frecuencia de cada área por entidad federativa
+    # conteo_areas_master_estado = df_master.groupby(['Entidad Federativa donde se imparte', 'Área(s) de interés (Maestría)']).size().reset_index(name='Frecuencia')
+    # conteo_areas_lic_estado = df_lic.groupby(['Entidad Federativa donde se imparte', 'Área(s) de interés (Licenciatura)']).size().reset_index(name='Frecuencia')
+    # conteo_areas_doc_estado = df_doc.groupby(['Entidad Federativa donde se imparte', 'Área(s) de interés (Doctorado)']).size().reset_index(name='Frecuencia')
 
     if estado != "vacio":
         if tab == 'tab-1':
             df_estado = df_lic[df_lic['Entidad Federativa donde se imparte'] == estado]
+            # Obtener el área de interés mayor y su frecuencia para Licenciatura en el estado seleccionado
+            # max_area_freq = conteo_areas_lic_estado[(conteo_areas_lic_estado['Área(s) de interés (Doctorado)'] == max_area) & (conteo_areas_lic_estado['Entidad Federativa donde se imparte'] == estado)]['Frecuencia'].iloc[0]
         elif tab == 'tab-2':
             df_estado = df_master[df_master['Entidad Federativa donde se imparte'] == estado]
+            # Obtener el área de interés mayor y su frecuencia para Licenciatura en el estado seleccionado
+            # max_area_freq = conteo_areas_master_estado[(conteo_areas_master_estado['Área'] == max_area) & (conteo_areas_master_estado['Entidad Federativa donde se imparte'] == estado)]['Frecuencia'].iloc[0]
         elif tab == 'tab-3':
             df_estado = df_doc[df_doc['Entidad Federativa donde se imparte'] == estado]
+            # Obtener el área de interés mayor y su frecuencia para Licenciatura en el estado seleccionado
+            # max_area_freq = conteo_areas_doc_estado[(conteo_areas_doc_estado['Área'] == max_area) & (conteo_areas_doc_estado['Entidad Federativa donde se imparte'] == estado)]['Frecuencia'].iloc[0]
 
         # Verificar si la columna '¿La Institución es pública o privada?' existe en el DataFrame
         if '¿La Institución es pública o privada?' in df_estado.columns:
@@ -608,6 +697,82 @@ def update_general_stats(tab):
         ],
             width=5
         )
+
+    )
+
+    # Convertir el contenido del dataframe a mayúsculas y sin acentos
+    df_master['Área(s) de interés (Maestría)'] = df_master['Área(s) de interés (Maestría)'].apply(
+        lambda x: unidecode(x.upper()))
+    df_lic['Área(s) de interés (Licenciatura)'] = df_lic['Área(s) de interés (Licenciatura)'].apply(
+        lambda x: unidecode(x.upper()))
+    df_doc['Área(s) de interés (Doctorado)'] = df_doc['Área(s) de interés (Doctorado)'].apply(
+        lambda x: unidecode(x.upper()))
+
+    # Obtener todas las áreas en una sola columna
+    areas_master = df_master['Área(s) de interés (Maestría)'].str.replace(
+        ';', ',').str.split(',').explode().str.strip()
+    areas_lic = df_lic['Área(s) de interés (Licenciatura)'].str.replace(
+        ';', ',').str.split(',').explode().str.strip()
+    areas_doc = df_doc['Área(s) de interés (Doctorado)'].str.replace(
+        ';', ',').str.split(',').explode().str.strip()
+    # Contar la frecuencia de cada área
+    conteo_areas_master = areas_master.value_counts().reset_index()
+    conteo_areas_lic = areas_lic.value_counts().reset_index()
+    conteo_areas_doc = areas_doc.value_counts().reset_index()
+    # Renombrar las columnas del DataFrame de conteo
+    conteo_areas_master.columns = ['Área', 'Frecuencia']
+    conteo_areas_doc.columns = ['Área', 'Frecuencia']
+    conteo_areas_lic.columns = ['Área', 'Frecuencia']
+
+    # Combinar los dataframes en uno solo
+    # df_conteo = pd.concat([conteo_areas_master, conteo_areas_lic, conteo_areas_doc])
+    # Si funciona
+    # Generar el gráfico utilizando Plotly Express
+    # fig_areas = px.scatter(df_conteo, x="Área", y="Frecuencia", size="Frecuencia", color="Área",
+    #              hover_data=["Área", "Frecuencia"], title="Frecuencia de áreas de interés",
+    #              labels={"Frecuencia": "Frecuencia", "Área": "Área de interés"})
+
+    # Combinar los dataframes en uno solo
+    df_conteo = pd.concat(
+        [conteo_areas_master, conteo_areas_lic, conteo_areas_doc])
+
+    # Agregar una columna 'Nivel' para indicar la licenciatura, maestría o doctorado
+    df_conteo['Nivel'] = ['Maestría'] * len(conteo_areas_master) + ['Licenciatura'] * len(
+        conteo_areas_lic) + ['Doctorado'] * len(conteo_areas_doc)
+
+    # Generar el gráfico de barras agrupadas utilizando Plotly Express
+    fig_areas = px.bar(df_conteo, x="Nivel", y="Frecuencia", color="Área", barmode="group",
+                       hover_data=["Nivel", "Área", "Frecuencia"], title="Frecuencia de áreas de interés",
+                       labels={"Frecuencia": "Frecuencia", "Nivel": "Nivel de estudio"})
+    # Ocultar la leyenda
+    fig_areas.update_layout(
+        # legend=dict(
+        # yanchor="top",
+        # y=0.99,
+        # xanchor="left",
+        # x=0.01,
+        # traceorder='normal',
+        # legend=False)
+        # legend = False
+    )
+
+    cards.append(
+        dbc.Row([
+            dbc.Col([
+                dbc.Card(
+                    [
+                        dbc.CardHeader(
+                            "Gráfico de Sunburst por Nivel Educativo y Estado"),
+                        dbc.CardBody(dcc.Graph(figure=fig_areas)),
+                    ],
+                    className="card border-secondary mb-3 graph-card",
+                )
+            ],
+                # width=5
+                # height=100
+            )
+        ]),
+
 
     )
 

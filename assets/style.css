@@ -148,7 +148,7 @@ body {
 
 .card {
     font-size: 16px !important;
-    height: 150px !important;
+    /* height: 150px !important; */
     padding-bottom: 5px;
 }
 
@@ -235,4 +235,7 @@ h5 {
 #maps {
     background-color: #080808;
 
+}
+.graph-card{
+    background-color: #ffffff
 }

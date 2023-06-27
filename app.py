@@ -1,63 +1,150 @@
+from data import *
 import dash
-import dash_bootstrap_components as dbc
-import dash_html_components as html
-import pandas as pd
 from dash import dcc
+from dash import html
+from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
+from function_callbacks import *
+
+
+# Create a dictionary of all the map dataframes
+df_dict = {'Licenciatura': df_lic, 'Maestría': df_master, 'Doctorado': df_doc}
+estados = estados_dict
 
 # Crear la aplicación Dash
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-
-# Crear un DataFrame de ejemplo
-df = pd.DataFrame({'Estados': ['Texas', 'California', 'Florida']})
-
-# Definir el diseño de la aplicación
-app.layout = html.Div([
-    html.H1('Verificación de Estado'),
-    dbc.Tabs([
-        dbc.Tab(label='Tab 1', children=[
-            dbc.Alert(id='alerta-tab-1', color='danger', dismissable=True, is_open=False),
-            html.Br(),
-            dcc.Dropdown(
-                id='dropdown-estados-tab-1',
-                options=[{'label': estado, 'value': estado} for estado in df['Estados']],
-                value=None
-            )
-        ]),
-        dbc.Tab(label='Tab 2', children=[
-            dbc.Alert(id='alerta-tab-2', color='danger', dismissable=True, is_open=False),
-            html.Br(),
-            dcc.Dropdown(
-                id='dropdown-estados-tab-2',
-                options=[{'label': estado, 'value': estado} for estado in df['Estados']],
-                value=None
-            )
-        ]),
-        dbc.Tab(label='Tab 3', children=[
-            dbc.Alert(id='alerta-tab-3', color='danger', dismissable=True, is_open=False),
-            html.Br(),
-            dcc.Dropdown(
-                id='dropdown-estados-tab-3',
-                options=[{'label': estado, 'value': estado} for estado in df['Estados']],
-                value=None
-            )
-        ])
-    ])
-])
-
-# Definir una función de devolución de llamada para verificar si el estado seleccionado existe en el DataFrame
-@app.callback(
-    dash.dependencies.Output('alerta-tab-1', 'is_open'),
-    dash.dependencies.Output('alerta-tab-2', 'is_open'),
-    dash.dependencies.Output('alerta-tab-3', 'is_open'),
-    dash.dependencies.Input('dropdown-estados-tab-1', 'value'),
-    dash.dependencies.Input('dropdown-estados-tab-2', 'value'),
-    dash.dependencies.Input('dropdown-estados-tab-3', 'value')
+app = dash.Dash(__name__, external_stylesheets=[
+    'style.css',
+    dbc.themes.CYBORG
+]
 )
-def verificar_estado_seleccionado_tab(estado_tab_1, estado_tab_2, estado_tab_3):
-    is_open_tab_1 = estado_tab_1 is not None and estado_tab_1 not in df['Estados']
-    is_open_tab_2 = estado_tab_2 is not None and estado_tab_2 not in df['Estados']
-    is_open_tab_3 = estado_tab_3 is not None and estado_tab_3 not in df['Estados']
-    return is_open_tab_1, is_open_tab_2, is_open_tab_3
+
+# Definir el layout de la aplicació
+app.layout = dbc.Container(
+    [
+        html.H1("Mapa de Programas Educativos"),
+        dbc.Row(
+            [
+                # Columna de las tarjetas y el menú desplegable
+                dbc.Col(
+                    [
+                        dbc.Card(
+                            [
+                                html.Div(className="", children=[
+                                    dbc.Label("Selecciona un Estado",
+                                              style={'color': 'white', 'font-size': 28}),
+                                    dcc.Dropdown(
+                                        style={'background-color': '#696969',
+                                               'color': 'black', 'border-radius': 5, 'border': '1px solid rgba(255, 255, 255, 0.18)'},
+                                        id="estado",
+                                        options=[
+                                            {"label": col, "value": col} for col in estados
+                                        ],
+                                        value="vacio",
+                                    ),
+                                ],
+                                ),
+                            ],
+                            body=True,
+                            class_name="card-title shadow ",
+                            style={
+                                'border': '1px solid rgba(255, 255, 255, 0.18)'},
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(id="stats"),
+                            ]
+                        ),
+                    ],
+                    # Ajustar el ancho de la columna
+                    width={'size': 12, 'order': 'first'},
+                    lg={'size': 4, 'order': 'first'},
+                    className='primera-columna'
+                ),
+                # Columna de las pestañas y el gráfico
+                dbc.Col(
+                    [
+                        dcc.Tabs(id='tabs',
+                                 value='tab-1',
+                                 className='underTabs',
+                                 children=[
+                                     dcc.Tab(label='Licenciatura',
+                                             value='tab-1',
+                                             className='custom-tab',
+                                             selected_className='custom-tab--selected lic'
+                                             ),
+                                     dcc.Tab(label='Maestría',
+                                             value='tab-2',
+                                             className='custom-tab',
+                                             selected_className='custom-tab--selected mas'
+                                             ),
+                                     dcc.Tab(label='Doctorado',
+                                             value='tab-3',
+                                             className='custom-tab',
+                                             selected_className='custom-tab--selected doc'
+                                             )
+                                 ]),
+                        dcc.Graph(
+                            figure={}, id='maps', style={'box-sizing': 'border-box', 'border-width': '1px',
+                                                         'paper_bgcolor': 'rgba(0,0,0,0)',
+                                                         'plot_bgcolor': 'rgba(0,0,0,0)'},
+                            config={
+                                'displayModeBar': False})
+                    ],
+                    # Adjust the width of the column
+                    className='colMapa shadow',
+                    width={'size': 12, 'order': 'last'},
+                    lg={'size': 8, 'order': 'last'},
+                ),
+            ],
+            justify="between",
+            align="start",
+            style={'margin-bottom': 30}
+        ),
+        # crear otra fila con columnas
+        dbc.Row(
+            [
+                html.H2("Datos Generales"),
+                dbc.Col(
+                    id="general-stats",
+                )
+            ],
+
+
+            className='datos-generales'
+
+        ),
+
+    ],
+    fluid=True,
+)
+
+app.callback(
+    Output('estado', 'options'),
+    [Input('tabs', 'value')]
+)(update_dropdown_options)
+
+
+app.callback(
+    Output('maps', 'figure'),
+    [
+        Input('tabs', 'value'),
+        Input('estado', 'value')
+    ],
+)(render_content)
+
+
+app.callback(
+    Output('stats', 'children'),
+    [
+        Input('tabs', 'value'),
+        Input('estado', 'value')]
+)(update_stats)
+
+app.callback(
+    Output('general-stats', 'children'),
+    [Input('tabs', 'value')]
+)(update_general_stats)
+
 
 # Iniciar el servidor Dash
 if __name__ == '__main__':
